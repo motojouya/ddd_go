@@ -1,0 +1,422 @@
+package core
+
+import (
+	"errors"
+	"reflect"
+	"strconv"
+)
+
+/*
+ * InvalidArgumentError
+ */
+type InvalidArgumentError struct {
+	Name  string
+	Value string
+	error
+}
+
+func NewInvalidArgumentError(name string, value string, message string) InvalidArgumentError {
+	return InvalidArgumentError{
+		Name:  name,
+		Value: value,
+		error: errors.New(message),
+	}
+}
+
+func (e InvalidArgumentError) Error() string {
+	return e.error.Error() + ", name: " + e.Name + ", value: " + e.Value
+}
+
+func (e InvalidArgumentError) Unwrap() error {
+	return e.error
+}
+
+func (e InvalidArgumentError) HttpStatus() uint {
+	return 400
+}
+
+/*
+ * RangeError
+ */
+type RangeError struct {
+	Name  string
+	Value int
+	Min   int
+	Max   int
+	error
+}
+
+func NewRangeError(name string, value int, min int, max int, message string) RangeError {
+	return RangeError{
+		Name:  name,
+		Value: value,
+		Min:   min,
+		Max:   max,
+		error: errors.New(message),
+	}
+}
+
+func (e RangeError) Error() string {
+	return e.error.Error() + ", name: " + e.Name + ", value: " + strconv.Itoa(e.Value) + ", min: " + strconv.Itoa(e.Min) + ", max: " + strconv.Itoa(e.Max)
+}
+
+func (e RangeError) Unwrap() error {
+	return e.error
+}
+
+func (e RangeError) HttpStatus() uint {
+	return 400
+}
+
+/*
+ * AuthenticationError
+ */
+type AuthenticationError struct {
+	UserIdentifier string
+	error
+}
+
+func NewAuthenticationError(userIdentifier string, message string) *AuthenticationError {
+	return &AuthenticationError{
+		UserIdentifier: userIdentifier,
+		error:          errors.New(message),
+	}
+}
+
+func (e AuthenticationError) Error() string {
+	return e.error.Error() + ", userIdentifier: " + e.UserIdentifier
+}
+
+func (e AuthenticationError) Unwrap() error {
+	return e.error
+}
+
+func (e AuthenticationError) HttpStatus() uint {
+	return 401
+}
+
+func formatKeys(keys map[string]string) string {
+	if len(keys) == 0 {
+		return "{}"
+	}
+	result := "{"
+	for k, v := range keys {
+		result += k + ": " + v + ", "
+	}
+	return result + "}"
+}
+
+/*
+ * NotFoundError
+ */
+type NotFoundError struct {
+	Table string
+	Keys  map[string]string
+	error
+}
+
+func NewNotFoundError(table string, keys map[string]string, message string) *NotFoundError {
+	return &NotFoundError{
+		Table: table,
+		Keys:  keys,
+		error: errors.New(message),
+	}
+}
+
+func (e NotFoundError) Error() string {
+	return e.error.Error() + ", table: " + e.Table + ", keys: " + formatKeys(e.Keys)
+}
+
+func (e NotFoundError) Unwrap() error {
+	return e.error
+}
+
+func (e NotFoundError) HttpStatus() uint {
+	return 400
+}
+
+/*
+ * DuplicateError
+ */
+type DuplicateError struct {
+	Table string
+	Keys  map[string]string
+	error
+}
+
+func NewDuplicateError(table string, keys map[string]string, message string) *DuplicateError {
+	return &DuplicateError{
+		Table: table,
+		Keys:  keys,
+		error: errors.New(message),
+	}
+}
+
+func (e DuplicateError) Error() string {
+	return e.error.Error() + ", table: " + e.Table + ", keys: " + formatKeys(e.Keys)
+}
+
+func (e DuplicateError) Unwrap() error {
+	return e.error
+}
+
+func (e DuplicateError) HttpStatus() uint {
+	return 400
+}
+
+/*
+ * TransactionError
+ */
+type TransactionError struct {
+	Inside  bool
+	Exitted bool
+	error
+}
+
+func CreateExitTransactionError(message string) *TransactionError {
+	return NewTransactionError(true, true, message)
+}
+
+func CreateInsideTransactionError(message string) *TransactionError {
+	return NewTransactionError(true, false, message)
+}
+
+func CreateOutsideTransactionError(message string) *TransactionError {
+	return NewTransactionError(false, false, message)
+}
+
+func NewTransactionError(inside bool, exitted bool, message string) *TransactionError {
+	return &TransactionError{
+		Inside:  inside,
+		Exitted: exitted,
+		error:   errors.New(message),
+	}
+}
+
+func (e TransactionError) Error() string {
+	if e.Inside {
+		if e.Exitted {
+			return e.error.Error() + ", inside transaction, but already exitted"
+		} else {
+			return e.error.Error() + ", inside transaction, and cannot exit"
+		}
+	} else {
+		return e.error.Error() + ", outside transaction"
+	}
+}
+
+func (e TransactionError) Unwrap() error {
+	return e.error
+}
+
+func (e TransactionError) HttpStatus() uint {
+	return 500
+}
+
+/*
+ * NilError
+ */
+type NilError struct {
+	Name string
+	error
+}
+
+func NewNilError(name string, message string) *NilError {
+	return &NilError{
+		Name:  name,
+		error: errors.New(message),
+	}
+}
+
+func (e NilError) Error() string {
+	return e.error.Error() + ", name: " + e.Name
+}
+
+func (e NilError) Unwrap() error {
+	return e.error
+}
+
+func (e NilError) HttpStatus() uint {
+	return 400
+}
+
+/*
+ * SystemConfigError
+ */
+type SystemConfigError struct {
+	Name string
+	error
+}
+
+func NewSystemConfigError(name string, message string) *SystemConfigError {
+	return &SystemConfigError{
+		Name:  name,
+		error: errors.New(message),
+	}
+}
+
+func (e SystemConfigError) Error() string {
+	return e.error.Error() + ", name: " + e.Name
+}
+
+func (e SystemConfigError) Unwrap() error {
+	return e.error
+}
+
+func (e SystemConfigError) HttpStatus() uint {
+	return 500
+}
+
+/*
+ * PropertyError
+ *
+ * なんらかの不整合で生じたエラーは、特定の名前空間で処理されるため、その名前空間にたどりつくための経路を知ることができない
+ * したがってその経路は呼び出し側で補填する必要があり、その機能を備えたエラー型
+ */
+type PropertyError struct {
+	Property       string
+	HttpStatusCode uint
+	error
+}
+
+func CreatePropertyError(property string, source error) *PropertyError {
+
+	var rv = reflect.ValueOf(source)
+	var method = rv.MethodByName("HttpStatus")
+	var httpStatus uint = 400
+	if method.IsValid() && method.Kind() == reflect.Func {
+		var methodReturns = method.Call(nil)
+		httpStatus = uint(methodReturns[0].Uint())
+	}
+
+	return NewPropertyError(property, httpStatus, source)
+}
+
+func NewPropertyError(property string, httpStatus uint, source error) *PropertyError {
+	return &PropertyError{
+		Property:       property,
+		HttpStatusCode: httpStatus,
+		error:          source,
+	}
+}
+
+func (e PropertyError) Error() string {
+	return e.error.Error() + ", property: " + e.Property + ", httpStatus: " + strconv.Itoa(int(e.HttpStatusCode))
+}
+
+func (e PropertyError) Unwrap() error {
+	return e.error
+}
+
+func (e PropertyError) HttpStatus() uint {
+	if e.HttpStatusCode != 0 {
+		return e.HttpStatusCode
+	}
+	return 400
+}
+
+func (e PropertyError) Add(path string) *PropertyError {
+	return &PropertyError{
+		Property:       path + "." + e.Property,
+		HttpStatusCode: e.HttpStatusCode,
+		error:          e.error,
+	}
+}
+
+func (e PropertyError) Change(path string, httpStatus uint) *PropertyError {
+	return &PropertyError{
+		Property:       path + "." + e.Property,
+		HttpStatusCode: httpStatus,
+		error:          e.error,
+	}
+}
+
+var propertyError PropertyError = PropertyError{}
+
+func AddPropertyError(path string, source error) *PropertyError {
+	if source == nil {
+		panic("source error cannot be nil")
+	}
+
+	if pe, ok := source.(*PropertyError); ok {
+		return pe.Add(path)
+	} else {
+		return CreatePropertyError(path, source)
+	}
+}
+
+func ChangePropertyError(path string, source error, httpStatus uint) *PropertyError {
+	if source == nil {
+		panic("source error cannot be nil")
+	}
+
+	if pe, ok := source.(*PropertyError); ok {
+		return pe.Change(path, httpStatus)
+	} else {
+		return NewPropertyError(path, httpStatus, source)
+	}
+}
+
+/*
+ * LengthError
+ */
+type LengthError struct {
+	Name  string
+	Value string
+	Min   uint
+	Max   uint
+	error
+}
+
+func NewLengthError(name string, value string, min uint, max uint, message string) *LengthError {
+	return &LengthError{
+		Name:  name,
+		Value: value,
+		Min:   min,
+		Max:   max,
+		error: errors.New(message),
+	}
+}
+
+func (e LengthError) Error() string {
+	return e.error.Error() + " (name: " + e.Name + ", value: " + e.Value + ", min: " + strconv.Itoa(int(e.Min)) + ", max: " + strconv.Itoa(int(e.Max)) + ")"
+}
+
+func (e LengthError) Unwrap() error {
+	return e.error
+}
+
+func (e LengthError) HttpStatus() uint {
+	return 400
+}
+
+/*
+ * FormatError
+ */
+type FormatError struct {
+	Name   string
+	Format string
+	Value  string
+	error
+}
+
+func NewFormatError(name string, format string, value string, message string) *FormatError {
+	return &FormatError{
+		Name:   name,
+		Format: format,
+		Value:  value,
+		error:  errors.New(message),
+	}
+}
+
+func (e FormatError) Error() string {
+	return e.error.Error() + " (name: " + e.Name + ", format: " + e.Format + ", value: " + e.Value + ")"
+}
+
+func (e FormatError) Unwrap() error {
+	return e.error
+}
+
+func (e FormatError) HttpStatus() uint {
+	return 400
+}

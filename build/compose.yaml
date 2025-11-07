@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      dockerfile: "build/Dockerfile"
+      context: ".."
+      target: final
+      # args:
+      #   - UID
+      #   - GO_VERSION
+      #   - TARGETARCH
+    ports:
+      - "${HOST_PORT}:8000"
+    volumes:
+      - appdata:/opt/data
+      - type: tmpfs
+        target: /opt/tmp
+        tmpfs:
+          size: 10000000
+    environment:
+      OTEL_LOG_LEVEL: info
+      PORT: 8000
+      DB_DRIVER: postgres
+      DB_NAME: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+  postgres:
+    image: postgres:17.6-bookworm
+    container_name: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - dbstore:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+volumes:
+  appdata:
+  dbstore:
