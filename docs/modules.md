@@ -17,7 +17,7 @@
   - ..EachAggregate
     - entry
     - record
-    - plain
+    - core
     - behavior
     - mock
     - store
@@ -54,14 +54,14 @@ modelはIOを伴ったり、複数のデータモデルを扱うので、より�
 ### データモデル系  
 #### record  
 DBのレコードを表すのでDBと紐づけるselect句などの情報を持つ  
-後述するentry,plainがない場合はこれのみなので、入力値設定も持つことになる  
-またplainがある場合は、plainへの変換ロジックも持つ  
+後述するentry,coreがない場合はこれのみなので、入力値設定も持つことになる  
+またcoreがある場合は、coreへの変換ロジックも持つ  
 
 #### entry  
 入力値を表すのでwebからの入力json情報を持つ  
-plainがある場合はplainへ、ない場合はrecordへ変換するロジックを持つ  
+coreがある場合はcoreへ、ない場合はrecordへ変換するロジックを持つ  
 
-#### plain  
+#### core  
 ビジネスロジックで扱う純粋なデータモデル。何にも依存しない  
 
 #### schema  
@@ -93,17 +93,17 @@ behaviorもstoreも関数をまとめたオブジェクトを用意する
 ```mermaid
 classDiagram
   class entry
-  class plain
-  plain <.. entry
+  class core
+  core <.. entry
   class record
-  plain <.. record
+  core <.. record
 
   class controller
   entry <.. controller
 
   class behavior
   entry <.. behavior
-  plain <.. behavior
+  core <.. behavior
   record <.. behavior
 
   class store
@@ -117,13 +117,13 @@ classDiagram
 0. valve,utility,model/essenceの実装  
   使いまわせるので先に用意されているとよい
 1. 各modelのinterface定義  
-  a. plainがあればplain、なければrecordのデータ定義のみ  
+  a. coreがあればcore、なければrecordのデータ定義のみ  
   b. entryのデータ定義のみ  
   c. behavior interfaceとmock  
 2. controllerの実装  
   modelのbehavior interfaceを利用するのみなのでこの段階で実装可能  
 3. modelの実装  
-  a. entry,plain,recordでrecordがなければ定義。またお互いの変換ロジックも  
+  a. entry,core,recordでrecordがなければ定義。またお互いの変換ロジックも  
   b. storeの実装とmockの用意  
   c. behaviorの実装  
 5. 統合テストの実装  
@@ -141,7 +141,7 @@ model部品は実装が簡単なら分離しない。そのほうが凝集度が
 データモデルが他の集約から依存される場合、入力モデルと実際に依存されるモデルは分離しておきたい。  
 また、保存しない情報、フラグが多い場合も用意したい。  
 
-### plain
+### core
 アプリケーション上でロジックが複雑な場合に用意する。  
 また、データモデルの項目にstringが多くて区別したい場合や、文字数、文字種などの制約の厳しいstringが複数存在する場合も用意したい。
 
