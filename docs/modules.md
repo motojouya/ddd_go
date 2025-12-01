@@ -16,6 +16,8 @@
 - domain
   - route.go
   - command.go
+  - interface_behavior.go
+  - store.go
   - ..EachAggregate
     - route.go
     - command.go
@@ -30,88 +32,86 @@
 - utility
   - controller
 
-### utilityディレクトリについて
+## 各ディレクトリの説明
+
+### cmd
+アプリケーションのエントリポイント  
+webサーバの起動もそうだが、業務上cliコマンドの作成もよくある事例なので用意している。  
+
+### domain
+特定のドメインモデルの集約を表現する  
+集約単位でディレクトリを切り、その中に様々な実装を施す。詳細は別途記載  
+
+### デフォルト集約
+domain配下でデフォルトで用意しているツール群  
+基本的に使うでしょうというイメージ  
+
+- database  
+  データベース接続関連  
+- local  
+  日付、乱数、ファイル、別プロセスの起動など、メモリとcpuの外に出る際の機能を提供する  
+  環境変数取得、設定値管理なども  
+- basic  
+  string,配列など組み込み型の拡張機能  
+
+### utility
 utilityディレクトリは、Aggregateを横断して利用する関数などを集める。
 stringやdatabaseなどは後述するデフォルトAggregateに含まれる。そのほか単一の関心事項にフォーカスする関数などは適切なAggregate配下に配置する。
 Aggregateを横断して利用するのは、主にcontroller層であるため、controllerディレクトリを用意している。独自middlewareなどもここに配置したい。
 
-### route&commandファイルについて
+## domain以下のディレクトリ
+
+### route&command
 route.goはwebのurl route定義、command.goはcliコマンド定義を行う。
 各Aggregate配下に用意し、Aggregateごとのroute,commandを定義し、それを統括する定義をdomain直下に用意する。
 
-### デフォルトAggregate構成
-- database  
-  データベース接続関連  
-  
-- local
-  日付、乱数、ファイル、別プロセスの起動など、メモリとcpuの外に出る際の機能を提供する
-- basic
-  string,配列など組み込み型の拡張機能
-- config
-  環境変数取得、設定値管理など
+### interface
+behavior,storeのinterfaceを配置する  
+ディレクトリではなく、トップレベルにファイルとして用意
 
-
-## 各モジュールの役割
-
-ディレクトリ上の各モジュールの役割は以下の通り
-
-### valve  
-アプリケーションの外に出る際の出口となる機能  
-日付、乱数、ファイル、DB、外部API、別プロセスの起動など、メモリとcpuの外に出る際の機能を提供する  
-特定のデータモデルに依存しない実装で、その上にデータモデルごとのインタフェースを用意するが、それはmodelディレクトリに置く  
-
-### model  
-特定のドメインモデルの集約を表現する  
-集約単位でディレクトリを切り、その中に様々な実装を施す。詳細は別途記載  
-
-controller,modelともに、集約ごとのディレクトリを切る。  
-controllerは複数のmodelの集約を利用する形をとるが、利用のみのためディレクトリは細かくない。  
-modelはIOを伴ったり、複数のデータモデルを扱うので、より細かく以下のようにディレクトリを切る。  
-
-### データモデル系  
-#### controller  
+### controller  
 modelのふるまいを統合して、機能を提供する。アプリケーションのインタフェースとしての役割  
 webであれば、routingに紐づける  
-内部は集約の単位でディレクトリを切り、その中に各集約のcontrollerを配置する  
-集約単位であるが、依存している集約のmodelも利用する  
+他の集約のbehaiviorを利用する。behaiviorはinterfaceで依存注入されるので、実装依存はしない。  
+その際、依存しているもののみならず、被依存しているものも利用する。特にDBレコードを集計する場合などによくある。  
+behaiviorと違い、1関数1構造体という形をとる。controllerの関数ごとに、依存しているdomainが違うため。  
+controllerはいわゆるドメインレイヤ/アプリレイヤとしたときに後者なので、domain配下なのは違和感がある。  
+だが、いずれにしろ機能の分類自体がdomainを意識したものになるであろうという予測なので、domain配下に配置する。  
 
-#### record  
+### behavior  
+集約のふるまいとして関数を公開するが、その関数の実装を持つ  
+storeがない場合は、valveを利用してsql定義などもするが簡易なもののみ  
+storeがある場合はstoreを利用する  
+controllerと違い、構造体一つに複数の関数を紐づけ、behaivior自体は一つの構造体で取り扱える形をとる。  
+
+### record  
 DBのレコードを表すのでDBと紐づけるselect句などの情報を持つ  
 後述するentry,coreがない場合はこれのみなので、入力値設定も持つことになる  
 またcoreがある場合は、coreへの変換ロジックも持つ  
 
-#### entry  
+### entry  
 入力値を表すのでwebからの入力json情報を持つ  
 coreがある場合はcoreへ、ない場合はrecordへ変換するロジックを持つ  
 
-#### core  
+### core  
 ビジネスロジックで扱う純粋なデータモデル。何にも依存しない  
 
-#### schema  
+### schema  
 アプリケーションではなく、DBのスキーマ定義  
 マイグレーションなどで利用する  
 
-### 処理実装系  
-#### interface
-behavior,storeのinterfaceを配置する  
-ディレクトリではなく、トップレベルにファイルとして用意
-
-#### behavior  
-集約のふるまいとして関数を公開するが、その関数の実装を持つ  
-storeがない場合は、valveを利用してsql定義などもするが簡易なもののみ  
-storeがある場合はstoreを利用する  
-
-#### store  
-valveの機能を利用して、データの永続化、参照を行う  
+### store  
+特にDB domainの機能を利用して、データの永続化、参照を行う  
 主にsqlのwhere句を定義する  
+必要であれば、web apiや特定フォーマットへのファイルアクセスなどioを伴う操作が複雑になる場合storeを用意する。  
 
-#### mock  
+### mock  
 behaviorもstoreも関数をまとめたオブジェクトを用意する
 そのオブジェクトのinterfaceを実装したmockを配置
 
 ## 依存関係
 
-各モジュールの依存関係は以下となる
+データモデルの依存関係は以下となる  
 
 ```mermaid
 classDiagram
@@ -133,11 +133,41 @@ classDiagram
   record <.. store
 ```
 
+モジュールの依存関係は以下となる。  
+集約間の依存関係が`A<-B<-C`としており、core,behaviorはその依存関係を守る。  
+controllerのみ`C<-B`のような逆方向にも依存可能とする。  
+
+```mermaid
+classDiagram
+  class coreA
+  class behaviorA
+  class controllerA
+  coreA <.. behaviorA
+  behaviorA <.. controllerA
+
+  class coreB
+  class behaviorB
+  class controllerB
+  coreA <.. behaviorB
+  coreB <.. behaviorB
+  behaviorA <.. behaviorB
+  behaviorB <.. controllerB
+  behaviorC <.. controllerB
+
+  class coreC
+  class behaviorC
+  class controllerC
+  coreB <.. behaviorC
+  coreC <.. behaviorC
+  behaviorB <.. controllerC
+  behaviorC <.. controllerC
+```
+
 ## 実装順序
 
 依存から検討される実装順序の指針
 
-0. valve,utility,model/essenceの実装  
+0. utility,デフォルトdomainの実装  
   使いまわせるので先に用意されているとよい
 1. 各modelのinterface定義  
   a. coreがあればcore、なければrecordのデータ定義のみ  
@@ -171,6 +201,9 @@ model部品は実装が簡単なら分離しない。そのほうが凝集度が
 ### store
 sqlが複雑になる場合に分離して用意する。  
 単なるCRUDですむ場合、select文もjoinがない場合などは不要。  
+
+### controller
+何か外部に機能を提供する場合に、用意する。  
 
 ### behavior
 常に用意する。  

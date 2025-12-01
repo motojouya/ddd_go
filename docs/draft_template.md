@@ -7,15 +7,15 @@
 classDiagram
 ```
 
-### Directory
+## Directory
 
-### Enum
+## Enum
 
-### Mutation
+## Mutation
 
-### Query
+## Query
 
-### Property
+## Property
 
 ## Controller
 
