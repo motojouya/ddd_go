@@ -4,8 +4,8 @@ import (
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/go-gorp/gorp"
-	"github.com/motojouya/mvc_go/valve/database"
-	"github.com/motojouya/mvc_go/valve/database/utility"
+	"github.com/motojouya/mvc_go/domain/database/core"
+	"github.com/motojouya/mvc_go/domain/database/utility"
 	"reflect"
 	"testing"
 	"time"
@@ -33,7 +33,7 @@ var tables = []string{
 	"role",
 }
 
-func Truncate(t *testing.T, orp database.ORPer) {
+func Truncate(t *testing.T, orp core.ORPer) {
 	for _, table := range tables {
 		var _, err = orp.Exec("TRUNCATE TABLE " + table + " CASCADE")
 		if err != nil {
@@ -43,8 +43,8 @@ func Truncate(t *testing.T, orp database.ORPer) {
 }
 
 // truncateはforeign key制約のためにcascadeをつける必要があるので、独自実装で行っている。
-func oldTruncate(t *testing.T, orp database.ORPer) {
-	var impl, implOk = orp.(*database.ORP)
+func oldTruncate(t *testing.T, orp core.ORPer) {
+	var impl, implOk = orp.(*core.ORP)
 	if !implOk {
 		t.Fatalf("Expected database.ORPImpl, got %T", orp)
 	}
@@ -60,7 +60,7 @@ func oldTruncate(t *testing.T, orp database.ORPer) {
 	}
 }
 
-func Ready[T any](t *testing.T, orp database.ORPer, records []T) []T {
+func Ready[T any](t *testing.T, orp core.ORPer, records []T) []T {
 	var rec []interface{}
 	for _, record := range records {
 		rec = append(rec, &record)
@@ -81,7 +81,7 @@ func Ready[T any](t *testing.T, orp database.ORPer, records []T) []T {
 	return ret
 }
 
-func ReadyPointer[T any](t *testing.T, orp database.ORPer, records []*T) []*T {
+func ReadyPointer[T any](t *testing.T, orp core.ORPer, records []*T) []*T {
 	var rec []interface{}
 	for _, record := range records {
 		rec = append(rec, record)
@@ -112,8 +112,8 @@ func AssertRecords[T any](t *testing.T, expects []T, actuals []T, assertSame fun
 	}
 }
 
-func AssertTable[T any](t *testing.T, orp database.ORPer, orders []string, expects []T, assertSame func(*testing.T, T, T)) {
-	var impl, implOk = orp.(*database.ORP)
+func AssertTable[T any](t *testing.T, orp core.ORPer, orders []string, expects []T, assertSame func(*testing.T, T, T)) {
+	var impl, implOk = orp.(*core.ORP)
 	if !implOk {
 		t.Fatalf("Expected database.ORPImpl, got %T", orp)
 	}

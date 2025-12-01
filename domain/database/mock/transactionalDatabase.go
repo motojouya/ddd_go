@@ -1,4 +1,4 @@
-package testUtility
+package mock
 
 type TransactionalDatabaseMock struct {
 	FakeBegin    func() error

@@ -1,7 +1,7 @@
-package local_test
+package behavior_test
 
 import (
-	"github.com/motojouya/mvc_go/valve/local"
+	"github.com/motojouya/mvc_go/domain/local/behavior"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

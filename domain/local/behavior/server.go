@@ -1,8 +1,7 @@
 package behavior
 
 import (
-	"github.com/motojouya/mvc_go/valve/local"
-	"github.com/motojouya/mvc_go/model/config/core"
+	"github.com/motojouya/mvc_go/domain/local/core"
 )
 
 type ServerGetter interface {
@@ -19,7 +18,7 @@ var serverConf *core.Server
 
 func (getter *ServerGet) GetServer() (*core.Server, error) {
 	if serverConf == nil {
-		var serverConfObj, err = local.GetEnv[*core.Server]()
+		var serverConfObj, err = GetEnv[*core.Server]()
 		if err != nil {
 			return nil, err
 		}

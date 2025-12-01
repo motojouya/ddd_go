@@ -1,4 +1,4 @@
-package local
+package mock
 
 import (
 	"github.com/google/uuid"

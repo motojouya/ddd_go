@@ -4,15 +4,16 @@ import (
 	//_ "internal/shelter/timezone"
 	"database/sql"
 	"fmt"
-	"github.com/motojouya/mvc_go/valve/database"
-	"github.com/motojouya/mvc_go/valve/database/utility"
+	"github.com/motojouya/mvc_go/domain/database/core"
+	"github.com/motojouya/mvc_go/domain/database/behavior"
+	"github.com/motojouya/mvc_go/domain/database/utility"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	"log"
 	"os"
 )
 
-func ExecuteDatabaseTest(pathToRoot string, run func(database.ORPer) int) {
+func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
 	os.Setenv("TZ", "Asia/Tokyo") // `internal/shelter/timezone`だとできんかった？
 
 	pool, err := dockertest.NewPool("")
@@ -61,7 +62,7 @@ func ExecuteDatabaseTest(pathToRoot string, run func(database.ORPer) int) {
 		log.Fatalf("Could not migrate database: %s", migrateErr)
 	}
 
-	var orp = database.CreateDatabase(database)
+	var orp = behavior.CreateDatabase(database)
 
 	code := run(orp)
 

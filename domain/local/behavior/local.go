@@ -1,4 +1,4 @@
-package local
+package behavior
 
 import (
 	"github.com/google/uuid"
