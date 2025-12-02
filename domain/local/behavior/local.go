@@ -45,7 +45,7 @@ func (l Local) GetNow() time.Time {
 	return time.Now().In(jst)
 }
 
-func [T any]GetEnv() (T, error) {
+func GetEnv[T any]() (T, error) {
 	return env.ParseAs[T]()
 }
 

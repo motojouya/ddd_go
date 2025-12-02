@@ -5,7 +5,7 @@ import (
 )
 
 type ServerGetter interface {
-	GetServer() (core.Server, error)
+	GetServer() (*core.Server, error)
 }
 
 type ServerGet struct {}
@@ -18,7 +18,7 @@ var serverConf *core.Server
 
 func (getter *ServerGet) GetServer() (*core.Server, error) {
 	if serverConf == nil {
-		var serverConfObj, err = GetEnv[*core.Server]()
+		var serverConfObj, err = GetEnv[core.Server]()
 		if err != nil {
 			return nil, err
 		}
