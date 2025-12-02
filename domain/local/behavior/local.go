@@ -28,7 +28,7 @@ func (l Local) GenerateRamdomString(length int, source string) string {
 }
 
 func (l Local) GenerateUUID() (uuid.UUID, error) {
-	var uuidValue, err = uuid.NewUUID()
+	var uuidValue, err = uuid.NewV7()
 	if err != nil {
 		var zero = uuid.UUID{}
 		return zero, err
