@@ -1,11 +1,10 @@
-package testUtility
+package test
 
 import (
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/go-gorp/gorp"
 	"github.com/motojouya/mvc_go/domain/database/core"
-	"github.com/motojouya/mvc_go/domain/database/utility"
 	"reflect"
 	"testing"
 	"time"
@@ -136,13 +135,13 @@ func AssertTable[T any](t *testing.T, orp core.ORPer, orders []string, expects [
 	// 		orderBys = append(orderBys, goqu.C(column.ColumnName).Asc())
 	// 	}
 	// }
-	// var sql, args, sqlErr = utility.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
+	// var sql, args, sqlErr = core.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
 	var orderBys []exp.OrderedExpression
 	for _, order := range orders {
 		orderBys = append(orderBys, goqu.C(order).Asc())
 	}
 
-	var sql, args, sqlErr = utility.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
+	var sql, args, sqlErr = core.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
 	if sqlErr != nil {
 		t.Fatalf("Could not create SQL for %T: %s", zero, sqlErr)
 	}

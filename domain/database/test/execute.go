@@ -1,4 +1,4 @@
-package testUtility
+package test
 
 import (
 	//_ "internal/shelter/timezone"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/motojouya/mvc_go/domain/database/core"
 	"github.com/motojouya/mvc_go/domain/database/behavior"
-	"github.com/motojouya/mvc_go/domain/database/utility"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 	"log"
@@ -57,7 +56,7 @@ func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
 
-	var migrateErr = utility.Migrate(database, pathToRoot)
+	var migrateErr = core.Migrate(database, pathToRoot)
 	if migrateErr != nil {
 		log.Fatalf("Could not migrate database: %s", migrateErr)
 	}

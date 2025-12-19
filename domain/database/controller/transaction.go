@@ -1,4 +1,4 @@
-package utility
+package controller
 
 import (
 	"github.com/motojouya/mvc_go/domain/database/core"
