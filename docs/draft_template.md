@@ -19,7 +19,10 @@ classDiagram
 - controller
 - entry
 - core
+- exit
+- record
 - behavior
+- store
 - mock
 - schema
 
