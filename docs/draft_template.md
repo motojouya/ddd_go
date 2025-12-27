@@ -18,6 +18,7 @@ classDiagram
 項目分類
 - i: in: inの項目
 - o: out: outの項目
+- k: key: inだがkey項目として扱うので例えばjsonなどには含まれず、path parameterなどで扱う
 - c: context: 前提条件として既に存在するエンティティのキー
 - m: member: modelの項目
 - p: primary: modelの主キー
