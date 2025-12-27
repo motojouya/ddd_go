@@ -6,8 +6,10 @@ import (
 	"github.com/go-gorp/gorp"
 )
 
+// TODO SqlExecuter -> Sqler に変更
+
 type SqlExecutorMock struct {
-	FakeWithContext     func(ctx context.Context) gorp.SqlExecutor
+	FakeWithContext     func(ctx context.Context) gorp.SqlExecutor // TODO gorp.SqlExecutor -> Sqler
 	FakeGet             func(i interface{}, keys ...interface{}) (interface{}, error)
 	FakeInsert          func(list ...interface{}) error
 	FakeUpdate          func(list ...interface{}) (int64, error)

@@ -20,9 +20,13 @@ type TransactionalDatabase interface {
 	basic.Closable
 }
 
+type Sqler interface {
+	gorp.SqlExecutor
+}
+
 type ORPer interface {
 	TransactionalDatabase
-	gorp.SqlExecutor
+  Sqler
 	Query
 }
 

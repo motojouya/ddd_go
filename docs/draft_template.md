@@ -6,11 +6,11 @@
 ```mermaid
 classDiagram
   class Image {
-    string id
-    string url
-    string type
-    int height
-    int width
+    string id [p--]
+    string url [mio]
+    string type [mio]
+    int height [mio]
+    int width [mio]
   }
   Company "1" <.. "0..*" Image
 ```
@@ -27,36 +27,43 @@ classDiagram
 
 ## Directory
 - controller
-- entry
-- core
-- exit
+- in
+- out
+- model
 - record
-- behavior
-- store
+- repository
 - mock
 - schema
 
 ## Enum
 Nothing
 
+## Repository
+- Database.SqlExecutor
+- local.Localer
+
 ## Mutation
-- CreateImage(company Company, entry ImageEntry): Image { Image }
+- CreateImage(company Company, entry ImageGetter): Image { Image }
 
 ## Query
-- GetImageById(id []string): []Image
+- GetImageById(entry IdGetter): []Image
 
 ## Property
+- Image.id = local.GenerateID()
 - Image.url = s3やcloud storageのURL
 - Image.type = image/jpeg, image/pngなどのMIMEタイプ
 
 ## Controller
 - CreateImage  
+  Database.Transact
   company = Company.GetCompanyByCode(entry)
   return Image.CreateImage(company, entry)
+  Database.Close
 - GetImage  
   image = Image.GetImageById(entry)  
   company = Company.GetCompanyById(image.company_id)
   return Basic.Relate(image, company)
+  Database.Close
 
 ## Interface
 - POST /company/{company_code}/image
