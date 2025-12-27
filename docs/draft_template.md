@@ -15,6 +15,14 @@ classDiagram
   Company "1" <.. "0..*" Image
 ```
 
+項目分類
+- i: in: inの項目
+- o: out: outの項目
+- m: member: modelの項目
+- p: primary: modelの主キー
+- u: unuque: modelのユニークキー
+- v: virtual: sqlで仮想的に定義する項目
+
 ## Directory
 - controller
 - entry
