@@ -37,7 +37,7 @@ company/
   exit/
   record/
   store/
-  behavior/
+  repository/
   controller/
   schema/
 ```
@@ -53,11 +53,11 @@ company/
 - record
   DBのレコードを定義する。coreに書き込んで足りる場合は、coreで完結させ、recordは用意しない。
 - store
-  DBへのアクセスを定義し、behaviorから呼ばれる。joinがない、条件が単純なクエリはbehaviorで完結させ、storeは用意しない。
-- behavior
+  DBへのアクセスを定義し、repositoryから呼ばれる。joinがない、条件が単純なクエリはrepositoryで完結させ、storeは用意しない。
+- repository
   集約としてのデータの更新、参照の処理を定義する。
 - controller
-  複数の集約のbehaviorを取りまとめて、外部から呼ばれる機能を定義する。複数の集約を取り扱うが、中心となる集約があるので、その集約に配置される。
+  複数の集約のrepositoryを取りまとめて、外部から呼ばれる機能を定義する。複数の集約を取り扱うが、中心となる集約があるので、その集約に配置される。
 - schema
   DBのスキーマを定義するマイグレーションファイルを配置する。  
 
@@ -89,44 +89,44 @@ classDiagram
   class controller
   entry <.. controller
 
-  class behavior
-  entry <.. behavior
-  core <.. behavior
-  record <.. behavior
+  class repository
+  entry <.. repository
+  core <.. repository
+  record <.. repository
 
   class store
   record <.. store
 ```
 
 集約間とそれ以下のpackageを含めた依存関係は以下となる。  
-集約間の依存関係が`A<-B<-C`の場合、core,behaviorはその依存関係を守る。  
+集約間の依存関係が`A<-B<-C`の場合、core,repositoryはその依存関係を守る。  
 controllerのみ`C<-B`のような逆方向にも依存可能とする。  
 storeは集約をまたぐ依存はなく、entry,exit,recordはcoreに準じた依存関係。  
 
 ```mermaid
 classDiagram
   class coreA
-  class behaviorA
+  class repositoryA
   class controllerA
-  coreA <.. behaviorA
-  behaviorA <.. controllerA
+  coreA <.. repositoryA
+  repositoryA <.. controllerA
 
   class coreB
-  class behaviorB
+  class repositoryB
   class controllerB
-  coreA <.. behaviorB
-  coreB <.. behaviorB
-  behaviorA <.. behaviorB
-  behaviorB <.. controllerB
-  behaviorC <.. controllerB
+  coreA <.. repositoryB
+  coreB <.. repositoryB
+  repositoryA <.. repositoryB
+  repositoryB <.. controllerB
+  repositoryC <.. controllerB
 
   class coreC
-  class behaviorC
+  class repositoryC
   class controllerC
-  coreB <.. behaviorC
-  coreC <.. behaviorC
-  behaviorB <.. controllerC
-  behaviorC <.. controllerC
+  coreB <.. repositoryC
+  coreC <.. repositoryC
+  repositoryB <.. controllerC
+  repositoryC <.. controllerC
 ```
 
 ## その他
@@ -137,7 +137,7 @@ pkg配下でデフォルトで用意しているツール群
 
 - database  
   データベース接続関連  
-  他の集約と違いcoreのふるまいに副作用がある。こちらのbehaviorはこのcoreを取得する処理を提供する。
+  他の集約と違いcoreのふるまいに副作用がある。こちらのrepositoryはこのcoreを取得する処理を提供する。
 - local  
   日付、乱数、ファイル、別プロセスの起動など、システムに問い合わせて値を取得するような処理を配置する。  
   日付、乱数などは、利用頻度が高いので常用されているが、副作用のある処理であるというのが前提。  

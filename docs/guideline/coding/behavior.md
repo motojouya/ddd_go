@@ -1,5 +1,5 @@
 
-# Behavior Package Guide
+# Repository Package Guide
 
 ## Overview
 集約のふるまい（Repository）として関数を公開するパッケージ。  
@@ -7,11 +7,11 @@
 
 ## 資料
 `docs/draft`配下の対応する集約のドキュメントを参照。  
-特にBehavior欄に実装すべき機能が記載されている。
+特にRepository欄に実装すべき機能が記載されている。
 ドキュメントの読み方については、[docs/guildeline/design.md](docs/guildeline/design.md)を参照。  
 
 ## 実装
-behaviorに実装するものは3種類ある。  
+repositoryに実装するものは3種類ある。  
 - オブジェクトとインターフェース
 - 関数
 - モック
@@ -22,22 +22,22 @@ behaviorに実装するものは3種類ある。
 
 ### オブジェクトとインターフェース
 一つのファイルに、インターフェースとそれを実装する構造体の両方を定義する。  
-構造体が持つべきフィールドは、`docs/draft`のbehavior欄に記載されている。  
-ファイル名は、`<集約>.go`、インターフェース名は、`<集約>Behavior`、構造体名は、`<集約>Behave`とする。  
+構造体が持つべきフィールドは、`docs/draft`のrepository欄に記載されている。  
+ファイル名は、`<集約>.go`、インターフェース名は、`<集約>Repository`、構造体名は、`<集約>Behave`とする。  
 
 ### モック
 モックは、`mock.go`というファイルに、インターフェースを満たす形で実装する。  
 
 ### 実装関数とメソッド
-処理の手続きは、`pkg/database/behavior`に以下の関数が定義されているため、それを主に利用する。  
+処理の手続きは、`pkg/database/repository`に以下の関数が定義されているため、それを主に利用する。  
 - Create
 - Update
 - Delete
 - Mutate
 
 そのため、更新系の処理は、上記の関数と、entryパッケージに実装した`Transferable`でほぼ事足りる。  
-また、`pkg/company/behavior` `pkg/warehouse_base/behavior`にも同様の手続きがある。  
-これらは特にCreateの手続きの変化版に当たり、`pkg/database/behavior`の手続きでは実現できないものはこちらを利用する。  
+また、`pkg/company/repository` `pkg/warehouse_base/repository`にも同様の手続きがある。  
+これらは特にCreateの手続きの変化版に当たり、`pkg/database/repository`の手続きでは実現できないものはこちらを利用する。  
 
 参照系の処理は、上記の関数ではまかなえないので、別ファイルに関数を切り出して定義して、メソッドから呼び出す。  
 更新系であっても、上記の手続きだけで実現できず、他集約の状態をDBアクセスして問い合わせる必要がある場合など、集約ごとに独自実装が必要がある場合は定義する。  
@@ -62,17 +62,17 @@ behaviorに実装するものは3種類ある。
 
 ### 更新系パターン
 更新系パターンの場合は、引数に与えられたentryの変換関数(Transfer)からcoreの構想体を生成し、DB操作を行う。  
-この一連の手続きは、`pkg/database/behavior`の対応する関数で表現されているので、こちらを利用する。  
+この一連の手続きは、`pkg/database/repository`の対応する関数で表現されているので、こちらを利用する。  
 entryと、集約が依存する構造体を与えると、実行できる。  
 返り値は集約ルートの構造体となる。更新後の構造体を返す形で実装する。  
 
-ただし、集約ルートを新規作成する場合は、`pkg/database/behavior`ではなく`pkg/company/behavior` `pkg/warehouse_base/behavior`を利用することもある。  
+ただし、集約ルートを新規作成する場合は、`pkg/database/repository`ではなく`pkg/company/repository` `pkg/warehouse_base/repository`を利用することもある。  
 それらは、idやnumの発行を行ってくれるので、エンティティキーが必要な構造体において使うもの。  
 
 ### 参照系
 参照系は、DBから集約を取得するための関数。  
 集約ルートの構造体を返す。  
-実装として、sqlが複雑になる場合は、storeを使用する。storeを使うべきか否かは、`docs/draft`のbehavior欄に記載されている。  
+実装として、sqlが複雑になる場合は、storeを使用する。storeを使うべきか否かは、`docs/draft`のrepository欄に記載されている。  
 
 集約ルートから全ての構造体を1つのsqlで取れないことも多いが、その場合は、複数のDB問い合わせを実行して構造体を組み立てる形となる。  
 組み立てる際には、`pkg/database/core`のRelate,RelateUnique関数を利用する。Relateに渡す叙述関数はcoreの構造体に定義されている。不足の場合は追加すること。  

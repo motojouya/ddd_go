@@ -18,7 +18,7 @@
 3. exit
 4. schema
 5. store
-6. behavior
+6. repository
 7. controller
 
 1.coreは集約の中心で、他の集約のcoreに依存することはあれど、coreが集約配下の他のpackageに依存することはない。
@@ -35,7 +35,7 @@
 
 ## Testing
 テストは、集約配下のcore,entry,exitについては、パッケージのファイルがそろったら一気にユニットテストを実装する。  
-store,behavior,controllerについては、一つの関数を作成したら、対応するユニットテストを実装する。  
+store,repository,controllerについては、一つの関数を作成したら、対応するユニットテストを実装する。  
 全ての集約の全てのパッケージが実装されたら統合テストを実装する。  
 
 テストの実装方法、注意事項については[docs/guildeline/test.md](docs/guildeline/test.md)を参照。  

@@ -20,7 +20,7 @@ company/
   exit/
   record/
   store/
-  behavior/
+  repository/
   controller/
   schema/
 ```
@@ -53,15 +53,15 @@ DBのレコードを定義する。coreに書き込んで足りる場合は、co
 詳細は[docs/guildeline/coding/record.md](docs/guildeline/coding/record.md)を参照。
 
 ### store package
-DBへのアクセスを定義し、behaviorから呼ばれる。joinがない、条件が単純なクエリはbehaviorで完結させ、storeは用意しない。
+DBへのアクセスを定義し、repositoryから呼ばれる。joinがない、条件が単純なクエリはrepositoryで完結させ、storeは用意しない。
 詳細は[docs/guildeline/coding/store.md](docs/guildeline/coding/store.md)を参照。
 
-### behavior package
+### repository package
 集約としてのデータの更新、参照の処理を定義する。
-詳細は[docs/guildeline/coding/behavior.md](docs/guildeline/coding/behavior.md)を参照。
+詳細は[docs/guildeline/coding/repository.md](docs/guildeline/coding/repository.md)を参照。
 
 ### controller package
-複数の集約のbehaviorを取りまとめて、外部から呼ばれる機能を定義する。複数の集約を取り扱うが、中心となる集約があるので、その集約に配置される。
+複数の集約のrepositoryを取りまとめて、外部から呼ばれる機能を定義する。複数の集約を取り扱うが、中心となる集約があるので、その集約に配置される。
 詳細は[docs/guildeline/coding/controller.md](docs/guildeline/coding/controller.md)を参照。
 
 ### schema package
