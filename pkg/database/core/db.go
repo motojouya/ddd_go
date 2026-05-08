@@ -2,8 +2,10 @@ package core
 
 import (
 	"database/sql"
-	"github.com/go-gorp/gorp"
-	_ "github.com/lib/pq"
+	"errors"
+	"fmt"
+
+	"github.com/go-gorp/gorp/v3"
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
 )
 
@@ -20,17 +22,12 @@ type TransactionalDatabase interface {
 	basic.Closable
 }
 
-type Sqler interface {
-	gorp.SqlExecutor
-}
-
 type ORPer interface {
 	TransactionalDatabase
-  Sqler
-	Query
+	Executor
 }
 
-func CreateDatabase(connection *sql.DB) *ORP {
+func CreateDatabase(connection *sql.DB, registerTable func(*gorp.DbMap)) ORPer {
 	var dbMap = &gorp.DbMap{Db: connection, Dialect: gorp.PostgresDialect{}}
 	registerTable(dbMap)
 
@@ -40,14 +37,33 @@ func CreateDatabase(connection *sql.DB) *ORP {
 	}
 }
 
-func registerTable(dbMap *gorp.DbMap) {
-	// ここにテーブル登録を追加していく
-}
-
 // dbMapはtransactionを開始した際に、退避するためのフィールドなので、transactionが開始されていない場合はnil。
 type ORP struct {
 	gorp.SqlExecutor
 	dbMap *gorp.DbMap
+}
+
+func tableFor(executor gorp.SqlExecutor, i interface{}) (*gorp.TableMap, error) {
+	orp, ok := executor.(*ORP)
+	if !ok {
+		// TODO errorはもう少しわかりやすいのにする
+		return nil, errors.New("SqlExecutor must be ORPer")
+	}
+
+	t, err := basic.GetType(i)
+	if err != nil {
+		return nil, err
+	}
+
+	if orp.dbMap != nil {
+		return orp.dbMap.TableFor(t, false)
+	}
+
+	if dbMap, ok := orp.SqlExecutor.(*gorp.DbMap); ok {
+		return dbMap.TableFor(t, false)
+	}
+
+	return nil, fmt.Errorf("no table found for type: %v", t.Name())
 }
 
 func (orp *ORP) Close() error {

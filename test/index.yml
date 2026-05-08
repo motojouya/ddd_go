@@ -1,0 +1,24 @@
+desc: シナリオテスト (集約単位の scenario を順に実行)
+vars:
+  # 会社
+  company_acm: "ACM01"
+  company_acm_id: "22222222-2222-2222-2222-222222222222"
+  company_acm_name: "Acme Corp"
+  # キュー
+  worker_name: "stock_worker"
+  worker_max_process: 10
+  queue_1_name: "stock_queue_1"
+  queue_2_name: "stock_queue_2"
+steps:
+  init:
+    desc: 全テーブル DELETE + 基礎マスタ (company / worker / queue) 投入
+    include:
+      path: init.yml
+      vars:
+        company_acm: "{{ vars.company_acm }}"
+        company_acm_id: "{{ vars.company_acm_id }}"
+        company_acm_name: "{{ vars.company_acm_name }}"
+        worker_name: "{{ vars.worker_name }}"
+        worker_max_process: "{{ vars.worker_max_process }}"
+        queue_1_name: "{{ vars.queue_1_name }}"
+        queue_2_name: "{{ vars.queue_2_name }}"

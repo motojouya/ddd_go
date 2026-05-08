@@ -1,15 +1,17 @@
 package behavior
 
 import (
-	"github.com/google/uuid"
 	"math/rand"
 	"time"
+
 	"github.com/caarlos0/env/v11"
+	"github.com/google/uuid"
+	basicCore "github.com/motojouya/ddd_go/pkg/basic/core"
 )
 
 type Localer interface {
 	GenerateRamdomString(length int, source string) string
-	GenerateUUID() (uuid.UUID, error)
+	GenerateID() (basicCore.Identifier, error)
 	GetNow() time.Time
 }
 
@@ -27,14 +29,18 @@ func (l Local) GenerateRamdomString(length int, source string) string {
 	return string(b)
 }
 
-func (l Local) GenerateUUID() (uuid.UUID, error) {
-	var uuidValue, err = uuid.NewV7()
+func (l Local) GenerateID() (basicCore.Identifier, error) {
+	uuidValue, err := uuid.NewV7()
 	if err != nil {
-		var zero = uuid.UUID{}
-		return zero, err
+		return basicCore.Identifier(""), err
 	}
 
-	return uuidValue, nil
+	id, err := basicCore.NewIdentifier(uuidValue.String())
+	if err != nil {
+		return basicCore.Identifier(""), err
+	}
+
+	return id, nil
 }
 
 func (l Local) GetNow() time.Time {
@@ -48,4 +54,3 @@ func (l Local) GetNow() time.Time {
 func GetEnv[T any]() (T, error) {
 	return env.ParseAs[T]()
 }
-

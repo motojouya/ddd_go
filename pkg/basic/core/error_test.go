@@ -2,10 +2,11 @@ package core_test
 
 // FIXME `stretchr/testify/assert` から脱却
 import (
-	"github.com/motojouya/ddd_go/pkg/basic/core"
-	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"
+
+	"github.com/motojouya/ddd_go/pkg/basic/core"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestInvalidArgumentError(t *testing.T) {

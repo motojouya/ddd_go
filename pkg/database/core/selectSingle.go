@@ -3,7 +3,7 @@ package core
 import (
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
-	"github.com/go-gorp/gorp"
+	"github.com/go-gorp/gorp/v3"
 	"github.com/motojouya/ddd_go/pkg/basic/core"
 )
 

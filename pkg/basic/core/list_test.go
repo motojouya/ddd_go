@@ -3,10 +3,11 @@ package core_test
 // FIXME `stretchr/testify/assert` から脱却
 import (
 	"errors"
-	"github.com/motojouya/mvc_gp/pkg/basic/core"
-	"github.com/stretchr/testify/assert"
 	"sort"
 	"testing"
+
+	"github.com/motojouya/ddd_go/pkg/basic/core"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFilter(t *testing.T) {

@@ -1,0 +1,44 @@
+desc: テストデータ初期化 (全テーブル DELETE + 基礎マスタ INSERT)
+runners:
+  db: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+vars:
+  # index.yml から override される想定 (defaults は単独実行用)
+  company_acm: "ACM01"
+  company_acm_id: "22222222-2222-2222-2222-222222222222"
+  company_acm_name: "Acme Corp"
+  worker_name: "stock_worker"
+  worker_max_process: 10
+  queue_1_name: "stock_queue_1"
+  queue_2_name: "stock_queue_2"
+steps:
+  delete_job:
+    db:
+      query: DELETE FROM job
+  delete_queue:
+    db:
+      query: DELETE FROM queue
+  delete_company:
+    db:
+      query: DELETE FROM company
+  delete_worker:
+    db:
+      query: DELETE FROM worker
+  insert_company:
+    desc: company 2件 (code は ^[A-Z]{3}\d{2}$)
+    db:
+      query: |
+        INSERT INTO company (id, code, name) VALUES
+        ('{{ vars.company_acm_id }}', '{{ vars.company_acm }}', '{{ vars.company_acm_name }}')
+  insert_worker:
+    desc: worker 1件
+    db:
+      query: |
+        INSERT INTO worker (name, max_process) VALUES
+        ('{{ vars.worker_name }}', {{ vars.worker_max_process }})
+  insert_queue:
+    desc: queue 2件 (worker に紐づく)
+    db:
+      query: |
+        INSERT INTO queue (name, worker_name, process_order) VALUES
+        ('{{ vars.queue_1_name }}', '{{ vars.worker_name }}', 1),
+        ('{{ vars.queue_2_name }}', '{{ vars.worker_name }}', 2)

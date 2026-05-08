@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/geezer_auth/pkg/shelter/user"
+	dbCore "github.com/motojouya/ddd_go/pkg/database/core"
 )
 
-func RollbackWithError(database core.Transactional, err error) error {
+func RollbackWithError(database dbCore.Transactional, err error) error {
 	if rollbackErr := database.Rollback(); rollbackErr != nil {
 		return rollbackErr
 	}
@@ -12,16 +13,25 @@ func RollbackWithError(database core.Transactional, err error) error {
 }
 
 // control処理の頭から最後までトランザクションとする場合に有効な関数。例えば、DBアクセスもするし、APIアクセスもして、トランザクションの粒度を操作したい場合は、control処理内でbegin/commitすべき
-// FIXME templateなのでないが、操作者としての人格(Userとか)も引数にとれるようにすべき
-func Transact[C core.TransactionalDatabase, E any, R any](callback func(C, E) (R, error)) func(C, E) (R, error) {
-	return func(control C, entry E) (R, error) {
+func Transact[C dbCore.TransactionalDatabase, E any, R any](callback func(C, E, *user.Authentic) (R, error)) func(C, E, *user.Authentic) (R, error) {
+	return func(control C, entry E, authentic *user.Authentic) (R, error) {
 
 		var zero R
 		if err := control.Begin(); err != nil {
 			return zero, err
 		}
 
-		result, err := callback(control, entry)
+		// callback で panic が発生した場合に transaction を必ず Rollback する。
+		// これがないと、orp が singleton のため次リクエストの Begin が
+		// 「transaction is already started」で全 5xx になる。
+		defer func() {
+			if r := recover(); r != nil {
+				_ = control.Rollback()
+				panic(r)
+			}
+		}()
+
+		result, err := callback(control, entry, authentic)
 
 		if err != nil {
 			if rollbackErr := control.Rollback(); rollbackErr != nil {

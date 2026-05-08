@@ -1,13 +1,14 @@
 package mock
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	basicCore "github.com/motojouya/ddd_go/pkg/basic/core"
 )
 
 type LocalerMock struct {
 	FakeGenerateRamdomString func(length int, source string) string
-	FakeGenerateUUID         func() (uuid.UUID, error)
+	FakeGenerateID           func() (basicCore.Identifier, error)
 	FakeGetNow               func() time.Time
 }
 
@@ -15,8 +16,8 @@ func (mock LocalerMock) GenerateRamdomString(length int, source string) string {
 	return mock.FakeGenerateRamdomString(length, source)
 }
 
-func (mock LocalerMock) GenerateUUID() (uuid.UUID, error) {
-	return mock.FakeGenerateUUID()
+func (mock LocalerMock) GenerateID() (basicCore.Identifier, error) {
+	return mock.FakeGenerateID()
 }
 
 func (mock LocalerMock) GetNow() time.Time {

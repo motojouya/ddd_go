@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # BASE
-ARG GO_VERSION=1.25.1
+ARG GO_VERSION=1.25.4
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-bookworm AS base
 WORKDIR /src
 
@@ -16,7 +16,7 @@ ARG TARGETARCH
 
 RUN --mount=type=cache,target=/go/pkg/mod/ \
     --mount=type=bind,source=.,target=. \
-    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server cmd/main.go
+    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/appname cmd/main.go
 
 # VAT
 FROM --platform=$BUILDPLATFORM base AS vet
@@ -53,17 +53,9 @@ ENV DB_HOST ""
 ENV DB_PORT ""
 ENV DB_USER ""
 ENV DB_PASSWORD ""
-ENV JWT_AUDIENCE ""
-ENV JWT_VALIDITY_PERIOD_MINUTES ""
-ENV JWT_ISSUER ""
-ENV JWT_MYSELF ""
-ENV JWT_LATEST_KEY_ID ""
-ENV JWT_LATEST_SECRET ""
-ENV JWT_OLD_KEY_ID ""
-ENV JWT_OLD_SECRET ""
 
 COPY --from=build /bin/server /bin/
 
 EXPOSE 8000
 
-ENTRYPOINT [ "/bin/server" ]
+ENTRYPOINT [ "/bin/appname" ]

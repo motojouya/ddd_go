@@ -1,9 +1,10 @@
 package core_test
 
 import (
-	"github.com/google/go-cmp/cmp"
-	"github.com/openlogi/poc_stock/pkg/basic/core"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/motojouya/ddd_go/pkg/basic/core"
 )
 
 func TestNewIdentifier_Valid(t *testing.T) {
@@ -51,7 +52,7 @@ func TestNewIdentifier_Invalid(t *testing.T) {
 func TestIdentifier_String(t *testing.T) {
 	uuidStr := "550e8400-e29b-41d4-a716-446655440000"
 	id, _ := core.NewIdentifier(uuidStr)
-	
+
 	if diff := cmp.Diff(uuidStr, id.String()); diff != "" {
 		t.Errorf("Identifier.String() mismatch (-want +got):\n%s", diff)
 	}

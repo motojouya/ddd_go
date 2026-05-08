@@ -8,7 +8,7 @@ type ServerGetter interface {
 	GetServer() (*core.Server, error)
 }
 
-type ServerGet struct {}
+type ServerGet struct{}
 
 func NewServerGet() *ServerGet {
 	return &ServerGet{}

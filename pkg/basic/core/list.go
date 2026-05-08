@@ -1,8 +1,16 @@
 package core
 
 import (
+	"fmt"
 	"slices"
 )
+
+func NilToList[T any](list []T) []T {
+	if list == nil {
+		return []T{}
+	}
+	return list
+}
 
 func Filter[T any](slice []T, predicate func(T) bool) []T {
 	var result []T
@@ -34,6 +42,22 @@ func ToVal[T any](slice []*T) []T {
 	var result []T
 	for _, item := range slice {
 		result = append(result, *item)
+	}
+	return result
+}
+
+func ToStr[S fmt.Stringer](slice []S) []string {
+	var result []string
+	for _, item := range slice {
+		result = append(result, item.String())
+	}
+	return result
+}
+
+func ToInterface[T any](slice []T) []interface{} {
+	var result []interface{}
+	for _, item := range slice {
+		result = append(result, item)
 	}
 	return result
 }
@@ -181,7 +205,7 @@ func Entries[T comparable, V any](m map[T]V) []struct {
  * branchは、[]leavesの要素を持っているが、DBでqueryを投げる際には、branch,leafで別々に投げたい。
  * 別々に投げた後に紐づけを行うための関数
  */
-func Relate[B any, L any](branches []B, leaves []L, relateIfCase func(B, L) (B, bool)) []B {
+func RelateUnique[B any, L any](branches []B, leaves []L, relateIfCase func(B, L) (B, bool)) []B {
 
 	if len(branches) == 0 {
 		return branches
@@ -219,6 +243,32 @@ func Relate[B any, L any](branches []B, leaves []L, relateIfCase func(B, L) (B, 
 	return related
 }
 
+func Relate[B any, L any](branches []B, leaves []L, relateIfCase func(B, L) (B, bool)) []B {
+
+	if len(branches) == 0 {
+		return branches
+	}
+
+	var related = make([]B, 0, len(branches))
+
+	for _, branch := range branches {
+		var workingBranch = branch
+		var matchedIndexes = []int{}
+
+		for index, leaf := range leaves {
+			var result, hasRelated = relateIfCase(workingBranch, leaf)
+			if hasRelated {
+				workingBranch = result
+				matchedIndexes = append(matchedIndexes, index)
+			}
+		}
+
+		related = append(related, workingBranch)
+	}
+
+	return related
+}
+
 func Intersect[V any, H any](verticals []V, horizontals []H, predicate func(V, H) bool) ([]V, []H, []V, []H) {
 
 	var verticalMatched []V = []V{}
@@ -233,7 +283,8 @@ func Intersect[V any, H any](verticals []V, horizontals []H, predicate func(V, H
 		for hIndex := len(horizontalUnmatched) - 1; hIndex >= 0; hIndex-- {
 			var horizontal = horizontalUnmatched[hIndex]
 
-			if predicate(vertical, horizontal) {
+			matched := predicate(vertical, horizontal)
+			if matched {
 				verticalMatched = append([]V{vertical}, verticalMatched...)
 				horizontalMatched = append([]H{horizontal}, horizontalMatched...)
 				verticalUnmatched = slices.Delete(verticalUnmatched, vIndex, vIndex+1)

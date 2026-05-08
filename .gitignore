@@ -26,3 +26,6 @@ go.work.sum
 
 # vim
 *.swp
+
+# temp files
+tmp

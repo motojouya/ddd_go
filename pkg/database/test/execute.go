@@ -1,15 +1,17 @@
-package test
+package testUtility
 
 import (
 	//_ "internal/shelter/timezone"
 	"database/sql"
 	"fmt"
-	"github.com/motojouya/ddd_go/pkg/database/core"
-	"github.com/motojouya/ddd_go/pkg/database/behavior"
-	"github.com/ory/dockertest/v3"
-	"github.com/ory/dockertest/v3/docker"
 	"log"
 	"os"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/motojouya/ddd_go/pkg/database/behavior"
+	"github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/ory/dockertest/v3"
+	"github.com/ory/dockertest/v3/docker"
 )
 
 func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
@@ -47,7 +49,7 @@ func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
 	var database *sql.DB
 	databaseUrl := fmt.Sprintf("postgres://ddd_go:ddd_go@%s/ddd_go?sslmode=disable", resource.GetHostPort("5432/tcp"))
 	if err = pool.Retry(func() error {
-		database, err = sql.Open("postgres", databaseUrl)
+		database, err = sql.Open("pgx", databaseUrl)
 		if err != nil {
 			return err
 		}
@@ -61,7 +63,7 @@ func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
 		log.Fatalf("Could not migrate database: %s", migrateErr)
 	}
 
-	var orp = behavior.CreateDatabase(database)
+	var orp = core.CreateDatabase(database, behavior.RegisterTable)
 
 	code := run(orp)
 

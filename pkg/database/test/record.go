@@ -1,13 +1,14 @@
-package test
+package testUtility
 
 import (
-	"github.com/doug-martin/goqu/v9"
-	"github.com/doug-martin/goqu/v9/exp"
-	"github.com/go-gorp/gorp"
-	"github.com/motojouya/ddd_go/pkg/database/core"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/doug-martin/goqu/v9"
+	"github.com/doug-martin/goqu/v9/exp"
+	"github.com/go-gorp/gorp/v3"
+	"github.com/motojouya/ddd_go/pkg/database/core"
 )
 
 func GetNow() time.Time {
@@ -18,21 +19,7 @@ func GetNow() time.Time {
 	return time.Now().In(jst)
 }
 
-// truncateの順序を決めているので、順番が重要。依存される側があとに来るようにする。
-var tables = []string{
-	"user_access_token",
-	"user_refresh_token",
-	"user_password",
-	"user_company_role",
-	"user_email",
-	"company_invite",
-	"users",
-	"company",
-	"role_permission",
-	"role",
-}
-
-func Truncate(t *testing.T, orp core.ORPer) {
+func Truncate(t *testing.T, orp core.ORPer, tables []string) {
 	for _, table := range tables {
 		var _, err = orp.Exec("TRUNCATE TABLE " + table + " CASCADE")
 		if err != nil {

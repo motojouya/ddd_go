@@ -3,13 +3,14 @@ package mock
 import (
 	"context"
 	"database/sql"
-	"github.com/go-gorp/gorp"
+
+	"github.com/go-gorp/gorp/v3"
+	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	"github.com/motojouya/ddd_go/pkg/database/core"
 )
 
-// TODO SqlExecuter -> Sqler に変更
-
 type SqlExecutorMock struct {
-	FakeWithContext     func(ctx context.Context) gorp.SqlExecutor // TODO gorp.SqlExecutor -> Sqler
+	FakeWithContext     func(ctx context.Context) gorp.SqlExecutor
 	FakeGet             func(i interface{}, keys ...interface{}) (interface{}, error)
 	FakeInsert          func(list ...interface{}) error
 	FakeUpdate          func(list ...interface{}) (int64, error)
@@ -25,6 +26,9 @@ type SqlExecutorMock struct {
 	FakeSelectOne       func(holder interface{}, query string, args ...interface{}) error
 	FakeQuery           func(query string, args ...interface{}) (*sql.Rows, error)
 	FakeQueryRow        func(query string, args ...interface{}) *sql.Row
+	FakeGetIn           func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error)
+	FakeGetMax          func(records interface{}, maxColName string, conditions map[string]interface{}) (int, error)
+	FakeGetPaging       func(records interface{}, conditions map[string]interface{}, orders []core.Order, pager basic.Pager) ([]interface{}, error)
 }
 
 func (mock SqlExecutorMock) WithContext(ctx context.Context) gorp.SqlExecutor {
@@ -89,4 +93,16 @@ func (mock SqlExecutorMock) Query(query string, args ...interface{}) (*sql.Rows,
 
 func (mock SqlExecutorMock) QueryRow(query string, args ...interface{}) *sql.Row {
 	return mock.FakeQueryRow(query, args...)
+}
+
+func (mock SqlExecutorMock) GetIn(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
+	return mock.FakeGetIn(records, conditions, forLock)
+}
+
+func (mock SqlExecutorMock) GetMax(records interface{}, maxColName string, conditions map[string]interface{}) (int, error) {
+	return mock.FakeGetMax(records, maxColName, conditions)
+}
+
+func (mock SqlExecutorMock) GetPaging(records interface{}, conditions map[string]interface{}, orders []core.Order, pager basic.Pager) ([]interface{}, error) {
+	return mock.FakeGetPaging(records, conditions, orders, pager)
 }
