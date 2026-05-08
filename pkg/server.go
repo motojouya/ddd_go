@@ -12,15 +12,15 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 
-	databaseBehavior "github.com/motojouya/ddd_go/pkg/database/behavior"
-	localBehavior "github.com/motojouya/ddd_go/pkg/local/behavior"
+	databaseRepository "github.com/motojouya/ddd_go/pkg/database/repository"
+	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
 	localCore "github.com/motojouya/ddd_go/pkg/local/core"
 )
 
 type ServeCmd struct{}
 
 func (srv *ServeCmd) Run() error {
-	serverConf, err := localBehavior.GetEnv[localCore.Server]()
+	serverConf, err := localRepository.GetEnv[localCore.Server]()
 	if err != nil {
 		fmt.Println("failed to get server config:", err)
 	}
@@ -30,7 +30,7 @@ func (srv *ServeCmd) Run() error {
 	Route(e)
 
 	// db connectionを取得してserver停止時にclose
-	dbGetter := databaseBehavior.NewDatabaseGet()
+	dbGetter := databaseRepository.NewDatabaseGet()
 	db, err := dbGetter.GetDatabase()
 	if err != nil {
 		return err

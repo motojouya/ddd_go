@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"github.com/go-gorp/gorp/v3"
 	company "github.com/motojouya/ddd_go/pkg/company/core"
 	"github.com/motojouya/ddd_go/pkg/database/core"
-	localBehavior "github.com/motojouya/ddd_go/pkg/local/behavior"
+	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
 	queue "github.com/motojouya/ddd_go/pkg/queue/core"
 )
 
@@ -27,7 +27,7 @@ var once sync.Once
 func (getter DatabaseGet) GetDatabase() (core.ORPer, error) {
 	var err error
 	once.Do(func() {
-		dbAccess, err := localBehavior.GetEnv[core.DBAccess]()
+		dbAccess, err := localRepository.GetEnv[core.DBAccess]()
 		if err != nil {
 			return
 		}

@@ -1,14 +1,14 @@
-package behavior_test
+package repository_test
 
 import (
 	"testing"
 
-	"github.com/motojouya/ddd_go/pkg/local/behavior"
+	"github.com/motojouya/ddd_go/pkg/local/repository"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateRamdomString(t *testing.T) {
-	l := behavior.CreateLocal()
+	l := repository.CreateLocal()
 	randomString := l.GenerateRamdomString(10, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
 	assert.Len(t, randomString, 10, "Random string should be of length 10")

@@ -1,4 +1,4 @@
-package behavior_test
+package repository_test
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
 	databaseCore "github.com/motojouya/ddd_go/pkg/database/core"
 	databaseMock "github.com/motojouya/ddd_go/pkg/database/mock"
-	behavior "github.com/motojouya/ddd_go/pkg/queue/behavior"
+	repository "github.com/motojouya/ddd_go/pkg/queue/repository"
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
 )
 
@@ -31,7 +31,7 @@ func TestGetQueue(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetQueue(sqlMock, queue1.Name, false)
+		result, err := repository.GetQueue(sqlMock, queue1.Name, false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -51,7 +51,7 @@ func TestGetQueue(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetQueue(sqlMock, "no-such-queue", false)
+		result, err := repository.GetQueue(sqlMock, "no-such-queue", false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -69,7 +69,7 @@ func TestGetQueue(t *testing.T) {
 			},
 		}
 
-		_, err := behavior.GetQueue(sqlMock, queue1.Name, false)
+		_, err := repository.GetQueue(sqlMock, queue1.Name, false)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)
@@ -92,7 +92,7 @@ func TestGetWorker(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetWorker(sqlMock, worker1.Name, false)
+		result, err := repository.GetWorker(sqlMock, worker1.Name, false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -112,7 +112,7 @@ func TestGetWorker(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetWorker(sqlMock, "no-such-worker", false)
+		result, err := repository.GetWorker(sqlMock, "no-such-worker", false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -130,7 +130,7 @@ func TestGetWorker(t *testing.T) {
 			},
 		}
 
-		_, err := behavior.GetWorker(sqlMock, worker1.Name, false)
+		_, err := repository.GetWorker(sqlMock, worker1.Name, false)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)
@@ -168,7 +168,7 @@ func TestGetQueueByWorker(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetQueueByWorker(sqlMock, workerName, false)
+		result, err := repository.GetQueueByWorker(sqlMock, workerName, false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -216,7 +216,7 @@ func TestGetQueueByWorker(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetQueueByWorker(sqlMock, "no-such-worker", false)
+		result, err := repository.GetQueueByWorker(sqlMock, "no-such-worker", false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -234,7 +234,7 @@ func TestGetQueueByWorker(t *testing.T) {
 			},
 		}
 
-		_, err := behavior.GetQueueByWorker(sqlMock, workerName, false)
+		_, err := repository.GetQueueByWorker(sqlMock, workerName, false)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)
@@ -275,7 +275,7 @@ func TestGetJobByQueue(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetJobByQueue(sqlMock, queueName, limit, false)
+		result, err := repository.GetJobByQueue(sqlMock, queueName, limit, false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -326,7 +326,7 @@ func TestGetJobByQueue(t *testing.T) {
 			},
 		}
 
-		result, err := behavior.GetJobByQueue(sqlMock, queueName, 10, false)
+		result, err := repository.GetJobByQueue(sqlMock, queueName, 10, false)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -344,7 +344,7 @@ func TestGetJobByQueue(t *testing.T) {
 			},
 		}
 
-		_, err := behavior.GetJobByQueue(sqlMock, queueName, 10, false)
+		_, err := repository.GetJobByQueue(sqlMock, queueName, 10, false)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)

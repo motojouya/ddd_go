@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
 	"github.com/motojouya/ddd_go/pkg/company/core"
 	database "github.com/motojouya/ddd_go/pkg/database/core"
-	local "github.com/motojouya/ddd_go/pkg/local/behavior"
+	local "github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
 func CreateRootAndMulti[Agr any, Dpd core.Companied, Nd database.Keyed, Sb any, In database.TransferableRootAndMulti[Agr, Dpd, Nd, Sb]](

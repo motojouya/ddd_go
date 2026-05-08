@@ -1,4 +1,4 @@
-package behavior_test
+package repository_test
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	basicCore "github.com/motojouya/ddd_go/pkg/basic/core"
 	databaseMock "github.com/motojouya/ddd_go/pkg/database/mock"
 	localMock "github.com/motojouya/ddd_go/pkg/local/mock"
-	behavior "github.com/motojouya/ddd_go/pkg/queue/behavior"
+	repository "github.com/motojouya/ddd_go/pkg/queue/repository"
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
@@ -63,7 +63,7 @@ func TestRegisterJob(t *testing.T) {
 		storeMock := makeStoreMock(sqlMock)
 		localer := makeLocaler()
 
-		result, err := behavior.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
+		result, err := repository.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -95,7 +95,7 @@ func TestRegisterJob(t *testing.T) {
 		storeMock := makeStoreMock(sqlMock)
 		localer := makeLocaler()
 
-		_, err := behavior.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
+		_, err := repository.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
 
 		if err == nil {
 			t.Error("エラーが期待されましたが、nilが返されました")
@@ -113,7 +113,7 @@ func TestRegisterJob(t *testing.T) {
 		storeMock := makeStoreMock(sqlMock)
 		localer := makeLocaler()
 
-		_, err := behavior.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
+		_, err := repository.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)
@@ -141,7 +141,7 @@ func TestRegisterJob(t *testing.T) {
 			},
 		}
 
-		_, err := behavior.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
+		_, err := repository.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)
@@ -161,7 +161,7 @@ func TestRegisterJob(t *testing.T) {
 		storeMock := makeStoreMock(sqlMock)
 		localer := makeLocaler()
 
-		_, err := behavior.RegisterJob(localer, storeMock, queueName, source, "INVALID_PROCEDURE", jsonData)
+		_, err := repository.RegisterJob(localer, storeMock, queueName, source, "INVALID_PROCEDURE", jsonData)
 
 		if err == nil {
 			t.Error("エラーが期待されましたが、nilが返されました")
@@ -185,7 +185,7 @@ func TestRegisterJob(t *testing.T) {
 		storeMock := makeStoreMock(sqlMock)
 		localer := makeLocaler()
 
-		_, err := behavior.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
+		_, err := repository.RegisterJob(localer, storeMock, queueName, source, procedure, jsonData)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)

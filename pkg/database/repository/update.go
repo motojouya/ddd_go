@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	"github.com/go-gorp/gorp/v3"

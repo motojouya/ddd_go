@@ -1,12 +1,12 @@
-package behavior
+package repository
 
 import (
-	local "github.com/motojouya/ddd_go/pkg/local/behavior"
+	local "github.com/motojouya/ddd_go/pkg/local/repository"
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
 
-type QueueBehavior interface {
+type QueueRepository interface {
 	// Mutation
 	CreateWorker(workerName string, maxProcess int) (queueCore.Worker, error)
 	CreateQueue(workerName string, queueName string, processOrder int) (queueCore.Queue, error)
@@ -26,7 +26,7 @@ type queueBehave struct {
 	localer local.Localer
 }
 
-func NewQueueBehavior(store queueStore.QueueStore, localer local.Localer) QueueBehavior {
+func NewQueueRepository(store queueStore.QueueStore, localer local.Localer) QueueRepository {
 	return &queueBehave{store: store, localer: localer}
 }
 

@@ -5,7 +5,7 @@ import (
 	"os/user"
 
 	geezerUser "github.com/motojouya/geezer_auth/pkg/shelter/user"
-	databaseBehavior "github.com/motojouya/ddd_go/pkg/database/behavior"
+	databaseRepository "github.com/motojouya/ddd_go/pkg/database/repository"
 )
 
 func HandleCmd[C any, I any, O any](createControl func() (C, error), handleControl func(C, I, *geezerUser.Authentic) (O, error), entry I) (O, error) {
@@ -18,7 +18,7 @@ func HandleCmd[C any, I any, O any](createControl func() (C, error), handleContr
 	fmt.Println("User Name: " + user.Username) // TODO 本当は、Authenticに変換してアプリケーションに渡したい
 
 	// db connectionを取得してserver停止時にclose
-	dbGetter := databaseBehavior.NewDatabaseGet()
+	dbGetter := databaseRepository.NewDatabaseGet()
 	db, err := dbGetter.GetDatabase()
 	defer db.Close()
 	if err != nil {

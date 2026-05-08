@@ -1,11 +1,11 @@
-package behavior_test
+package repository_test
 
 import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	"github.com/motojouya/ddd_go/pkg/company/behavior"
+	"github.com/motojouya/ddd_go/pkg/company/repository"
 	"github.com/motojouya/ddd_go/pkg/company/core"
 	dbmock "github.com/motojouya/ddd_go/pkg/database/mock"
 )
@@ -37,7 +37,7 @@ func TestGetCompanyById_Success(t *testing.T) {
 
 	idGetter := mockIdGetter{ids: []basic.Identifier{"id-1", "id-2"}}
 
-	result, err := behavior.GetCompanyById(executer, idGetter)
+	result, err := repository.GetCompanyById(executer, idGetter)
 	if err != nil {
 		t.Errorf("Expected no error, got: %v", err)
 	}
@@ -64,7 +64,7 @@ func TestGetCompanyById_EmptyIds(t *testing.T) {
 	}
 	idGetter := mockIdGetter{ids: []basic.Identifier{}}
 
-	result, err := behavior.GetCompanyById(executer, idGetter)
+	result, err := repository.GetCompanyById(executer, idGetter)
 	if err != nil {
 		t.Errorf("Expected no error, got: %v", err)
 	}
@@ -81,7 +81,7 @@ func TestGetCompanyById_GetterError(t *testing.T) {
 	executer := dbmock.SqlExecutorMock{}
 	idGetter := mockIdGetter{err: basic.NewInvalidArgumentError("id", "", "invalid id")}
 
-	result, err := behavior.GetCompanyById(executer, idGetter)
+	result, err := repository.GetCompanyById(executer, idGetter)
 	if err == nil {
 		t.Errorf("Expected error, got nil")
 	}

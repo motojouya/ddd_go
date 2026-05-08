@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
@@ -11,20 +11,20 @@ type Company interface {
 	GetCompanyByCode(codeGetter core.CompanyCodeGetter) ([]core.Company, error)
 }
 
-type CompanyBehavior struct {
+type CompanyRepository struct {
 	Executer dbCore.Executor
 }
 
-func NewCompanyBehavior(executer dbCore.Executor) *CompanyBehavior {
-	return &CompanyBehavior{
+func NewCompanyRepository(executer dbCore.Executor) *CompanyRepository {
+	return &CompanyRepository{
 		Executer: executer,
 	}
 }
 
-func (b *CompanyBehavior) GetCompanyById(idGetter basic.IdGetter) ([]core.Company, error) {
+func (b *CompanyRepository) GetCompanyById(idGetter basic.IdGetter) ([]core.Company, error) {
 	return GetCompanyById(b.Executer, idGetter)
 }
 
-func (b *CompanyBehavior) GetCompanyByCode(codeGetter core.CompanyCodeGetter) ([]core.Company, error) {
+func (b *CompanyRepository) GetCompanyByCode(codeGetter core.CompanyCodeGetter) ([]core.Company, error) {
 	return GetCompanyByCode(b.Executer, codeGetter)
 }

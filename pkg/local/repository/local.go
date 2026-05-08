@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	"math/rand"

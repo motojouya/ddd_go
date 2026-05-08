@@ -1,7 +1,7 @@
-package behavior
+package repository
 
 import (
-	database "github.com/motojouya/ddd_go/pkg/database/behavior"
+	database "github.com/motojouya/ddd_go/pkg/database/repository"
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )

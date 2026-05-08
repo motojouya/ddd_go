@@ -8,9 +8,9 @@ import (
 	"os/signal"
 	"sync"
 
-	databaseBehavior "github.com/motojouya/ddd_go/pkg/database/behavior"
-	localBehavior "github.com/motojouya/ddd_go/pkg/local/behavior"
-	qBehavior "github.com/motojouya/ddd_go/pkg/queue/behavior"
+	databaseRepository "github.com/motojouya/ddd_go/pkg/database/repository"
+	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
+	qRepository "github.com/motojouya/ddd_go/pkg/queue/repository"
 	qController "github.com/motojouya/ddd_go/pkg/queue/controller"
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
 	qStore "github.com/motojouya/ddd_go/pkg/queue/store"
@@ -30,16 +30,16 @@ func (wrk *WorkCmd) Run() error {
 	}
 
 	// db connectionを取得してserver停止時にclose
-	dbGetter := databaseBehavior.NewDatabaseGet()
+	dbGetter := databaseRepository.NewDatabaseGet()
 	db, err := dbGetter.GetDatabase()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	localer := localBehavior.CreateLocal()
+	localer := localRepository.CreateLocal()
 	qStr := qStore.NewQueueStore(db)
-	qBhv := qBehavior.NewQueueBehavior(qStr, localer)
+	qBhv := qRepository.NewQueueRepository(qStr, localer)
 
 	var wg sync.WaitGroup
 	// SIGINT/SIGTERMで停止する

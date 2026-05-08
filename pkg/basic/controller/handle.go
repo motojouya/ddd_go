@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/motojouya/geezer_auth/pkg/shelter/jwt"
 	"github.com/motojouya/geezer_auth/pkg/shelter/user"
-	localBehavior "github.com/motojouya/ddd_go/pkg/local/behavior"
+	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
 	userEntry "github.com/motojouya/ddd_go/pkg/user/entry"
 )
 
@@ -41,7 +41,7 @@ func Hand[C any, I any, O any](createControl func() (C, error), handleControl fu
 }
 
 func getAuthentic(header userEntry.RequestHeader) (*user.Authentic, error) {
-	var jwtParse, err = localBehavior.GetEnv[jwt.JwtParse]() // FIXME use cache!
+	var jwtParse, err = localRepository.GetEnv[jwt.JwtParse]() // FIXME use cache!
 	if err != nil {
 		return nil, err
 	}

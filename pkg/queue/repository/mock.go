@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"

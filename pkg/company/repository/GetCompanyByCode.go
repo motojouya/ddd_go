@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"

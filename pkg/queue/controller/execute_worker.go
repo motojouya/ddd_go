@@ -5,11 +5,11 @@ import (
 	"errors"
 	"time"
 
-	qBehavior "github.com/motojouya/ddd_go/pkg/queue/behavior"
+	qRepository "github.com/motojouya/ddd_go/pkg/queue/repository"
 	qCore "github.com/motojouya/ddd_go/pkg/queue/core"
 )
 
-func ExecuteWorker(qBhv qBehavior.QueueBehavior, route qCore.JobRouter, ctx context.Context, workerName string, keepWorking bool) error {
+func ExecuteWorker(qBhv qRepository.QueueRepository, route qCore.JobRouter, ctx context.Context, workerName string, keepWorking bool) error {
 	worker, err := qBhv.GetWorker(workerName)
 	if err != nil {
 		return err

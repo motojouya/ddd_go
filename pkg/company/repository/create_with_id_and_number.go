@@ -1,11 +1,11 @@
-package behavior
+package repository
 
 import (
 	"errors"
 
 	"github.com/motojouya/ddd_go/pkg/company/core"
 	database "github.com/motojouya/ddd_go/pkg/database/core"
-	local "github.com/motojouya/ddd_go/pkg/local/behavior"
+	local "github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
 func GetMaxNum[Nd database.Keyed](db database.Executor, node Nd, company core.Company) (uint, error) {

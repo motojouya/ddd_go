@@ -8,7 +8,7 @@ import (
 	"os"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/motojouya/ddd_go/pkg/database/behavior"
+	"github.com/motojouya/ddd_go/pkg/database/repository"
 	"github.com/motojouya/ddd_go/pkg/database/core"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
@@ -63,7 +63,7 @@ func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
 		log.Fatalf("Could not migrate database: %s", migrateErr)
 	}
 
-	var orp = core.CreateDatabase(database, behavior.RegisterTable)
+	var orp = core.CreateDatabase(database, repository.RegisterTable)
 
 	code := run(orp)
 

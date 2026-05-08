@@ -1,4 +1,4 @@
-package behavior_test
+package repository_test
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	"github.com/motojouya/ddd_go/pkg/company/behavior"
+	"github.com/motojouya/ddd_go/pkg/company/repository"
 	"github.com/motojouya/ddd_go/pkg/company/core"
 	dbmock "github.com/motojouya/ddd_go/pkg/database/mock"
 )
@@ -36,7 +36,7 @@ func TestGetCompanyByCode_Success(t *testing.T) {
 	code, _ := core.NewCompanyCode("ABC12")
 	codeGetter := mockCompanyCodeGetter{codes: []core.CompanyCode{code}}
 
-	result, err := behavior.GetCompanyByCode(executer, codeGetter)
+	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err != nil {
 		t.Errorf("Expected no error, got: %v", err)
 	}
@@ -72,7 +72,7 @@ func TestGetCompanyByCode_MultipleCodes(t *testing.T) {
 	codeB, _ := core.NewCompanyCode("DEF34")
 	codeGetter := mockCompanyCodeGetter{codes: []core.CompanyCode{codeA, codeB}}
 
-	result, err := behavior.GetCompanyByCode(executer, codeGetter)
+	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err != nil {
 		t.Fatalf("Expected no error, got: %v", err)
 	}
@@ -99,7 +99,7 @@ func TestGetCompanyByCode_EmptyCodes(t *testing.T) {
 	}
 	codeGetter := mockCompanyCodeGetter{codes: nil}
 
-	result, err := behavior.GetCompanyByCode(executer, codeGetter)
+	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err != nil {
 		t.Errorf("Expected no error, got: %v", err)
 	}
@@ -117,7 +117,7 @@ func TestGetCompanyByCode_GetterError(t *testing.T) {
 	getterErr := basic.NewInvalidArgumentError("code", "", "invalid code")
 	codeGetter := mockCompanyCodeGetter{err: getterErr}
 
-	result, err := behavior.GetCompanyByCode(executer, codeGetter)
+	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err == nil {
 		t.Errorf("Expected error, got nil")
 	}
@@ -141,7 +141,7 @@ func TestGetCompanyByCode_GetInError(t *testing.T) {
 	code, _ := core.NewCompanyCode("ABC12")
 	codeGetter := mockCompanyCodeGetter{codes: []core.CompanyCode{code}}
 
-	result, err := behavior.GetCompanyByCode(executer, codeGetter)
+	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}

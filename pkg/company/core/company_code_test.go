@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/motojouya/ddd_go/pkg/company/core"
-	"github.com/motojouya/ddd_go/pkg/local/behavior"
+	"github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
 func TestNewCompanyCode_Valid(t *testing.T) {
@@ -54,7 +54,7 @@ func TestNewCompanyCode_Invalid(t *testing.T) {
 }
 
 func TestGenerateCompanyCode(t *testing.T) {
-	localer := behavior.CreateLocal()
+	localer := repository.CreateLocal()
 
 	// Generate multiple codes to ensure they follow the pattern
 	for i := 0; i < 10; i++ {

@@ -1,11 +1,11 @@
-package behavior
+package repository
 
 import (
 	"encoding/json"
 	"errors"
 
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	local "github.com/motojouya/ddd_go/pkg/local/behavior"
+	local "github.com/motojouya/ddd_go/pkg/local/repository"
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )

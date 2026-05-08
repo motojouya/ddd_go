@@ -1,11 +1,11 @@
-package behavior_test
+package repository_test
 
 import (
 	"errors"
 	"testing"
 
 	databaseMock "github.com/motojouya/ddd_go/pkg/database/mock"
-	behavior "github.com/motojouya/ddd_go/pkg/queue/behavior"
+	repository "github.com/motojouya/ddd_go/pkg/queue/repository"
 	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
@@ -40,7 +40,7 @@ func TestCreateWorker(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		result, err := behavior.CreateWorker(storeMock, workerName, maxProcess)
+		result, err := repository.CreateWorker(storeMock, workerName, maxProcess)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -70,7 +70,7 @@ func TestCreateWorker(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		result, err := behavior.CreateWorker(storeMock, workerName, maxProcess)
+		result, err := repository.CreateWorker(storeMock, workerName, maxProcess)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -87,7 +87,7 @@ func TestCreateWorker(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{}
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
 
-		_, err := behavior.CreateWorker(storeMock, "", maxProcess)
+		_, err := repository.CreateWorker(storeMock, "", maxProcess)
 
 		if err == nil {
 			t.Error("エラーが期待されましたが、nilが返されました")
@@ -98,7 +98,7 @@ func TestCreateWorker(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{}
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
 
-		_, err := behavior.CreateWorker(storeMock, workerName, 0)
+		_, err := repository.CreateWorker(storeMock, workerName, 0)
 
 		if err == nil {
 			t.Error("エラーが期待されましたが、nilが返されました")
@@ -114,7 +114,7 @@ func TestCreateWorker(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		_, err := behavior.CreateWorker(storeMock, workerName, maxProcess)
+		_, err := repository.CreateWorker(storeMock, workerName, maxProcess)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)
@@ -148,7 +148,7 @@ func TestCreateQueue(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		result, err := behavior.CreateQueue(storeMock, workerName, queueName, processOrder)
+		result, err := repository.CreateQueue(storeMock, workerName, queueName, processOrder)
 
 		if err != nil {
 			t.Errorf("エラーが発生しました: %v", err)
@@ -175,7 +175,7 @@ func TestCreateQueue(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		_, err := behavior.CreateQueue(storeMock, workerName, queueName, processOrder)
+		_, err := repository.CreateQueue(storeMock, workerName, queueName, processOrder)
 
 		if err == nil {
 			t.Error("エラーが期待されましたが、nilが返されました")
@@ -191,7 +191,7 @@ func TestCreateQueue(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		_, err := behavior.CreateQueue(storeMock, workerName, queueName, processOrder)
+		_, err := repository.CreateQueue(storeMock, workerName, queueName, processOrder)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)
@@ -209,7 +209,7 @@ func TestCreateQueue(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		_, err := behavior.CreateQueue(storeMock, workerName, "", processOrder)
+		_, err := repository.CreateQueue(storeMock, workerName, "", processOrder)
 
 		if err == nil {
 			t.Error("エラーが期待されましたが、nilが返されました")
@@ -227,7 +227,7 @@ func TestCreateQueue(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		_, err := behavior.CreateQueue(storeMock, workerName, queueName, 0)
+		_, err := repository.CreateQueue(storeMock, workerName, queueName, 0)
 
 		if err == nil {
 			t.Error("エラーが期待されましたが、nilが返されました")
@@ -249,7 +249,7 @@ func TestCreateQueue(t *testing.T) {
 		}
 
 		storeMock := queueStore.NewQueueMock(makeORPerMock(sqlMock))
-		_, err := behavior.CreateQueue(storeMock, workerName, queueName, processOrder)
+		_, err := repository.CreateQueue(storeMock, workerName, queueName, processOrder)
 
 		if err != expectedErr {
 			t.Errorf("期待したエラーが返されませんでした。期待値: %v, 実際: %v", expectedErr, err)

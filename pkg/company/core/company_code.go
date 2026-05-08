@@ -5,7 +5,7 @@ import (
 	"regexp"
 
 	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	"github.com/motojouya/ddd_go/pkg/local/behavior"
+	"github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
 type CompanyCode string
@@ -24,7 +24,7 @@ func NewCompanyCode(code string) (CompanyCode, error) {
 	return CompanyCode(code), nil
 }
 
-func GenerateCompanyCode(localer behavior.Localer) CompanyCode {
+func GenerateCompanyCode(localer repository.Localer) CompanyCode {
 	letters := localer.GenerateRamdomString(3, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	numbers := localer.GenerateRamdomString(2, "0123456789")
 	return CompanyCode(letters + numbers)

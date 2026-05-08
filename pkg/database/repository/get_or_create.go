@@ -1,4 +1,4 @@
-package behavior
+package repository
 
 import (
 	database "github.com/motojouya/ddd_go/pkg/database/core"

@@ -1,11 +1,11 @@
-package behavior
+package repository
 
 import (
 	"errors"
 
 	"github.com/go-gorp/gorp/v3"
 	"github.com/motojouya/ddd_go/pkg/database/core"
-	local "github.com/motojouya/ddd_go/pkg/local/behavior"
+	local "github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
 func CreateWithId[Agr any, Dpd any, Nd core.Keyed, In core.TransferableWithId[Agr, Dpd, Nd]](
