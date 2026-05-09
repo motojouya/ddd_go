@@ -9,7 +9,7 @@ DBのスキーマ定義を管理するディレクトリ。
 `docs/draft`配下の対応する集約のドキュメントを参照。  
 対象のドキュメントのModel欄、Property欄、Note欄に記載がある。  
 ドキュメントの読み方については、[docs/guildeline/design.md](docs/guildeline/design.md)を参照。  
-集約の中のcore,recordパッケージはDBスキーマに対応する情報が定義されているので、それらも参照すること。  
+集約の中のmodel,recordパッケージはDBスキーマに対応する情報が定義されているので、それらも参照すること。  
 
 ## マイグレーションファイルの生成
 `golang-migrate`を使用して以下のようにマイグレーションファイルを生成する。  

@@ -32,9 +32,9 @@ company/
   route.go
   command.go
   job.go
-  core/
-  entry/
-  exit/
+  model/
+  input/
+  output/
   record/
   store/
   repository/
@@ -44,14 +44,14 @@ company/
 
 各ディレクトリ、ファイルの役割は、以下となる。
 詳細は、[docs/guildeline/coding/index.md](docs/guildeline/coding/index.md)を参照。
-- core
+- model
   いわゆるドメインモデルであり、副作用のないロジックやビジネスルールを定義する。
-- entry
-  システムへの入力を定義し、coreに変換されるデータを定義する。
-- exit
-  システムからの出力を定義し、coreから変換されるデータを定義する。
+- input
+  システムへの入力を定義し、modelに変換されるデータを定義する。
+- output
+  システムからの出力を定義し、modelから変換されるデータを定義する。
 - record
-  DBのレコードを定義する。coreに書き込んで足りる場合は、coreで完結させ、recordは用意しない。
+  DBのレコードを定義する。modelに書き込んで足りる場合は、modelで完結させ、recordは用意しない。
 - store
   DBへのアクセスを定義し、repositoryから呼ばれる。joinがない、条件が単純なクエリはrepositoryで完結させ、storeは用意しない。
 - repository
@@ -80,18 +80,18 @@ pkg配下にも、集約配下にも、route.go,command.go,job.goを配置する
 
 ```mermaid
 classDiagram
-  class entry
-  class core
-  core <.. entry
+  class input
+  class model
+  model <.. input
   class record
-  core <.. record
+  model <.. record
 
   class controller
-  entry <.. controller
+  input <.. controller
 
   class repository
-  entry <.. repository
-  core <.. repository
+  input <.. repository
+  model <.. repository
   record <.. repository
 
   class store
@@ -99,32 +99,32 @@ classDiagram
 ```
 
 集約間とそれ以下のpackageを含めた依存関係は以下となる。  
-集約間の依存関係が`A<-B<-C`の場合、core,repositoryはその依存関係を守る。  
+集約間の依存関係が`A<-B<-C`の場合、model,repositoryはその依存関係を守る。  
 controllerのみ`C<-B`のような逆方向にも依存可能とする。  
-storeは集約をまたぐ依存はなく、entry,exit,recordはcoreに準じた依存関係。  
+storeは集約をまたぐ依存はなく、input,output,recordはmodelに準じた依存関係。  
 
 ```mermaid
 classDiagram
-  class coreA
+  class modelA
   class repositoryA
   class controllerA
-  coreA <.. repositoryA
+  modelA <.. repositoryA
   repositoryA <.. controllerA
 
-  class coreB
+  class modelB
   class repositoryB
   class controllerB
-  coreA <.. repositoryB
-  coreB <.. repositoryB
+  modelA <.. repositoryB
+  modelB <.. repositoryB
   repositoryA <.. repositoryB
   repositoryB <.. controllerB
   repositoryC <.. controllerB
 
-  class coreC
+  class modelC
   class repositoryC
   class controllerC
-  coreB <.. repositoryC
-  coreC <.. repositoryC
+  modelB <.. repositoryC
+  modelC <.. repositoryC
   repositoryB <.. controllerC
   repositoryC <.. controllerC
 ```
@@ -137,7 +137,7 @@ pkg配下でデフォルトで用意しているツール群
 
 - database  
   データベース接続関連  
-  他の集約と違いcoreのふるまいに副作用がある。こちらのrepositoryはこのcoreを取得する処理を提供する。
+  他の集約と違いmodelのふるまいに副作用がある。こちらのrepositoryはこのmodelを取得する処理を提供する。
 - local  
   日付、乱数、ファイル、別プロセスの起動など、システムに問い合わせて値を取得するような処理を配置する。  
   日付、乱数などは、利用頻度が高いので常用されているが、副作用のある処理であるというのが前提。  

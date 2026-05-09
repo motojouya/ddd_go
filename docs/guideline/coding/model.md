@@ -1,11 +1,11 @@
 
-# Core Package Guide
+# Model Package Guide
 
 ## Overview
 いわゆるドメインモデルであり、副作用のないロジックやビジネスルールを定義する。  
-entry,exit,record,schemaなどの他のデータ型はcoreに準じたものとなり、coreが中心的な存在。  
+input,output,record,schemaなどの他のデータ型はmodelに準じたものとなり、modelが中心的な存在。  
 
-常に用意し、recordを用意しない場合はrecordの機能はcoreに含める。  
+常に用意し、recordを用意しない場合はrecordの機能はmodelに含める。  
 
 ## 資料
 `docs/draft`配下の対応する集約のドキュメントを参照。  
@@ -13,7 +13,7 @@ entry,exit,record,schemaなどの他のデータ型はcoreに準じたものと�
 ドキュメントの読み方については、[docs/guildeline/design.md](docs/guildeline/design.md)を参照。  
 
 ## 実装
-coreパッケージにも複数の構造体を定義する。  
+modelパッケージにも複数の構造体を定義する。  
 一つの構造体につき、一つのファイルを用意する。  
 
 構造体を含め、実装する関数や定数は、同じファイルに定義する。  
@@ -30,7 +30,7 @@ embedded構造体をフィールドに持てるのは、集約ルートのみ。
 
 ### フィールドの型
 依存している集約については、キーのみを持ち、参照は持たない。  
-idには`pkg/basic/core/id.go`の`Identifier`型を使用する。numにはuint型を使用する。  
+idには`pkg/basic/model/id.go`の`Identifier`型を使用する。numにはuint型を使用する。  
 
 固有のコード型（CompanyCodeなど）を定義する場合:  
 - 生成関数（例: `GenerateCompanyCode`）を用意し、`pkg/local/Localer`を引数に取る  
@@ -71,24 +71,24 @@ Idをフィールドに持つ構造体、あるいは別の構造体のIdをフ�
 ### IdList取得関数
 Id取得関数とは別物。  
 他の集約の構造体のIdをフィールドに持つ構造体に定義する。  
-対象のIdを、`pkg/basic/core/id.go`の`IdList`型に包んで返す関数を定義する。  
+対象のIdを、`pkg/basic/model/id.go`の`IdList`型に包んで返す関数を定義する。  
 
 ### 関連関数
 フィールドに構造体を持つ構造体に定義する。  
 構造体のフィールドは、更新関数ではなく、項目を関連づける形で形成されることもあるため。  
-実装は、`pkg/basic/core/list.go`のRelate,RelateUnique関数に渡す叙述関数となる。  
+実装は、`pkg/basic/model/list.go`のRelate,RelateUnique関数に渡す叙述関数となる。  
 命名は`Relate<関連する構造体名>`とする。  
 
 ### Match関数
 基本的に実装しないが、まれに実装が必要な場合がある。
-- リストの差分計算に使用する`Match`関数は、`core`パッケージに定義する
-- 関数シグネチャは`func MatchXxx(core CoreType, other OtherType) bool`の形式
-- `basic/core.Intersect`関数と組み合わせて使用し、2つのリストの共通要素と差分を抽出する
+- リストの差分計算に使用する`Match`関数は、`model`パッケージに定義する
+- 関数シグネチャは`func MatchXxx(model ModelType, other OtherType) bool`の形式
+- `basic/model.Intersect`関数と組み合わせて使用し、2つのリストの共通要素と差分を抽出する
 - 例: `MatchImage(itemImage ItemImage, img image.Image) bool` - ImageIdで比較
-- 例: `MatchTag(coreTag ItemTag, entryTag entry.ItemTag) bool` - TagNameで比較
+- 例: `MatchTag(modelTag ItemTag, inputTag input.ItemTag) bool` - TagNameで比較
 
 ### 定数
-ビジネスルールとなる、マジックナンバーの定義もcoreに含める。  
+ビジネスルールとなる、マジックナンバーの定義もmodelに含める。  
 特に、集約がリストを持つ場合、多くの場合にリストの件数制限があるため、その件数制限の定数を定義する。  
 
 ### 依存構造体
@@ -104,11 +104,11 @@ Id取得関数とは別物。
 必要な場合は、`docs/draft`配下のドキュメントのNote欄に、実装するロジックの内容の記載がある。  
 
 ## recordの実装
-coreの構造体は、集約ルートを除いて、基本的にテーブルと1対1で対応するように設計される。  
-そういった構造体については、record packageの機能をcoreに含める形で実装する。  
+modelの構造体は、集約ルートを除いて、基本的にテーブルと1対1で対応するように設計される。  
+そういった構造体については、record packageの機能をmodelに含める形で実装する。  
 実装の詳細は、[docs/guildeline/coding/record.md](docs/guildeline/coding/record.md)を参照。
 
 recordが必要になるのは、テーブルと集約内部のValue Objectが乖離してくる場合に、変換するために必要になる。  
-したがって、開発初期はrecordを用意せず、基本的にcoreに実装される。  
-recordにはcoreに変換する関数の定義があるが、これはcoreにrecordの機能を含める形で実装する場合は不要。  
+したがって、開発初期はrecordを用意せず、基本的にmodelに実装される。  
+recordにはmodelに変換する関数の定義があるが、これはmodelにrecordの機能を含める形で実装する場合は不要。  
 

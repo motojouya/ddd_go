@@ -15,9 +15,9 @@ company/
   route.go
   command.go
   job.go
-  core/
-  entry/
-  exit/
+  model/
+  input/
+  output/
   record/
   store/
   repository/
@@ -36,20 +36,20 @@ controllerで定義した機能を、外部から呼び出すためのエント�
 - job.go
   非同期処理のエントリーポイントの定義をする。
 
-### core package
+### model package
 いわゆるドメインモデルであり、副作用のないロジックやビジネスルールを定義する。
-詳細は[docs/guildeline/coding/core.md](docs/guildeline/coding/core.md)を参照。
+詳細は[docs/guildeline/coding/model.md](docs/guildeline/coding/model.md)を参照。
 
-### entry package
-システムへの入力を定義し、coreに変換されるデータを定義する。
-詳細は[docs/guildeline/coding/entry.md](docs/guildeline/coding/entry.md)を参照。
+### input package
+システムへの入力を定義し、modelに変換されるデータを定義する。
+詳細は[docs/guildeline/coding/input.md](docs/guildeline/coding/input.md)を参照。
 
-### exit package
-システムからの出力を定義し、coreから変換されるデータを定義する。
-詳細は[docs/guildeline/coding/exit.md](docs/guildeline/coding/exit.md)を参照。
+### output package
+システムからの出力を定義し、modelから変換されるデータを定義する。
+詳細は[docs/guildeline/coding/output.md](docs/guildeline/coding/output.md)を参照。
 
 ### record package
-DBのレコードを定義する。coreに書き込んで足りる場合は、coreで完結させ、recordは用意しない。
+DBのレコードを定義する。modelに書き込んで足りる場合は、modelで完結させ、recordは用意しない。
 詳細は[docs/guildeline/coding/record.md](docs/guildeline/coding/record.md)を参照。
 
 ### store package

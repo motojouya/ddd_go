@@ -36,8 +36,8 @@ controllerの関数ごとに、依存しているpkgが違うため。
 更新系処理では`databaseController.Transact`でトランザクションを開始する。
 `CompanyContext`や`WarehouseBaseContext`は`Transact`の内側で使用する
 
-controllerの返り値はcoreではなく、exitパッケージの型を使用するため、exitの変換関数を利用してcoreの構造体を変換する。  
-exitは他の集約のexit構造体を持つこともあるので、`pkg/basic/core`のRelate,RelateUnique関数に、exitのRelate関数を渡す形で紐づけする。
+controllerの返り値はmodelではなく、outputパッケージの型を使用するため、outputの変換関数を利用してmodelの構造体を変換する。  
+outputは他の集約のoutput構造体を持つこともあるので、`pkg/basic/model`のRelate,RelateUnique関数に、outputのRelate関数を渡す形で紐づけする。
 
 ### その他
 Webであれば、controllerは`pkg/basic/controller/handle.go`の`Hand`関数に渡して使用する。  

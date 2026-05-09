@@ -13,16 +13,16 @@
 
 ## Coding
 実装は、特定の集約に絞って、基本的に以下の順序でpackageを実装していく。
-1. core
-2. entry
-3. exit
+1. model
+2. input
+3. output
 4. schema
 5. store
 6. repository
 7. controller
 
-1.coreは集約の中心で、他の集約のcoreに依存することはあれど、coreが集約配下の他のpackageに依存することはない。
-また、2-4までは項目の定義を実装する傾向が強く、coreの情報に依存する。  
+1.modelは集約の中心で、他の集約のmodelに依存することはあれど、modelが集約配下の他のpackageに依存することはない。
+また、2-4までは項目の定義を実装する傾向が強く、modelの情報に依存する。  
 5-7は処理の流れを実装する傾向が強く、1-4の情報に依存する。  
 
 一つの集約の実装をやりきることが、一つのタスクの基本的な目標となる。  
@@ -34,7 +34,7 @@
 実装時の注意点や、実装ガイドラインは[docs/guildeline/coding/index.md](docs/guildeline/coding/index.md)を参照。  
 
 ## Testing
-テストは、集約配下のcore,entry,exitについては、パッケージのファイルがそろったら一気にユニットテストを実装する。  
+テストは、集約配下のmodel,input,outputについては、パッケージのファイルがそろったら一気にユニットテストを実装する。  
 store,repository,controllerについては、一つの関数を作成したら、対応するユニットテストを実装する。  
 全ての集約の全てのパッケージが実装されたら統合テストを実装する。  
 
