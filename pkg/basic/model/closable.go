@@ -1,4 +1,4 @@
-package core
+package model
 
 type Closable interface {
 	Close() error

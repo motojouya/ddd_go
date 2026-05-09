@@ -9,12 +9,12 @@ import (
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/motojouya/ddd_go/pkg/database/repository"
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
 )
 
-func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
+func ExecuteDatabaseTest(pathToRoot string, run func(model.ORPer) int) {
 	os.Setenv("TZ", "Asia/Tokyo") // `internal/shelter/timezone`だとできんかった？
 
 	pool, err := dockertest.NewPool("")
@@ -58,12 +58,12 @@ func ExecuteDatabaseTest(pathToRoot string, run func(core.ORPer) int) {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
 
-	var migrateErr = core.Migrate(database, pathToRoot)
+	var migrateErr = model.Migrate(database, pathToRoot)
 	if migrateErr != nil {
 		log.Fatalf("Could not migrate database: %s", migrateErr)
 	}
 
-	var orp = core.CreateDatabase(database, repository.RegisterTable)
+	var orp = model.CreateDatabase(database, repository.RegisterTable)
 
 	code := run(orp)
 

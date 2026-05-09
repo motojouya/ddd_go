@@ -1,3 +1,3 @@
-package entry
+package input
 
 type Empty struct{}

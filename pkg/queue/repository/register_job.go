@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	local "github.com/motojouya/ddd_go/pkg/local/repository"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
 
@@ -15,29 +15,29 @@ func RegisterJob(
 	source string,
 	procedure string,
 	jsonData any,
-) (queueCore.Job, error) {
+) (queueModel.Job, error) {
 
 	queue, err := GetQueue(store, queueName, false)
 	if err != nil {
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 	if queue == nil {
-		return queueCore.Job{}, errors.New("queue not found. name: " + queueName)
+		return queueModel.Job{}, errors.New("queue not found. name: " + queueName)
 	}
 
 	id, err := localer.GenerateID()
 	if err != nil {
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 
-	job, err := queueCore.NewJob(id, *queue, source, procedure, jsonData, localer.GetNow())
+	job, err := queueModel.NewJob(id, *queue, source, procedure, jsonData, localer.GetNow())
 	if err != nil {
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 
 	err = store.Insert(&job)
 	if err != nil {
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 
 	return job, nil

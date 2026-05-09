@@ -8,7 +8,7 @@ import (
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/go-gorp/gorp/v3"
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 )
 
 func GetNow() time.Time {
@@ -19,7 +19,7 @@ func GetNow() time.Time {
 	return time.Now().In(jst)
 }
 
-func Truncate(t *testing.T, orp core.ORPer, tables []string) {
+func Truncate(t *testing.T, orp model.ORPer, tables []string) {
 	for _, table := range tables {
 		var _, err = orp.Exec("TRUNCATE TABLE " + table + " CASCADE")
 		if err != nil {
@@ -29,8 +29,8 @@ func Truncate(t *testing.T, orp core.ORPer, tables []string) {
 }
 
 // truncateはforeign key制約のためにcascadeをつける必要があるので、独自実装で行っている。
-func oldTruncate(t *testing.T, orp core.ORPer) {
-	var impl, implOk = orp.(*core.ORP)
+func oldTruncate(t *testing.T, orp model.ORPer) {
+	var impl, implOk = orp.(*model.ORP)
 	if !implOk {
 		t.Fatalf("Expected database.ORPImpl, got %T", orp)
 	}
@@ -46,7 +46,7 @@ func oldTruncate(t *testing.T, orp core.ORPer) {
 	}
 }
 
-func Ready[T any](t *testing.T, orp core.ORPer, records []T) []T {
+func Ready[T any](t *testing.T, orp model.ORPer, records []T) []T {
 	var rec []interface{}
 	for _, record := range records {
 		rec = append(rec, &record)
@@ -67,7 +67,7 @@ func Ready[T any](t *testing.T, orp core.ORPer, records []T) []T {
 	return ret
 }
 
-func ReadyPointer[T any](t *testing.T, orp core.ORPer, records []*T) []*T {
+func ReadyPointer[T any](t *testing.T, orp model.ORPer, records []*T) []*T {
 	var rec []interface{}
 	for _, record := range records {
 		rec = append(rec, record)
@@ -98,8 +98,8 @@ func AssertRecords[T any](t *testing.T, expects []T, actuals []T, assertSame fun
 	}
 }
 
-func AssertTable[T any](t *testing.T, orp core.ORPer, orders []string, expects []T, assertSame func(*testing.T, T, T)) {
-	var impl, implOk = orp.(*core.ORP)
+func AssertTable[T any](t *testing.T, orp model.ORPer, orders []string, expects []T, assertSame func(*testing.T, T, T)) {
+	var impl, implOk = orp.(*model.ORP)
 	if !implOk {
 		t.Fatalf("Expected database.ORPImpl, got %T", orp)
 	}
@@ -122,13 +122,13 @@ func AssertTable[T any](t *testing.T, orp core.ORPer, orders []string, expects [
 	// 		orderBys = append(orderBys, goqu.C(column.ColumnName).Asc())
 	// 	}
 	// }
-	// var sql, args, sqlErr = core.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
+	// var sql, args, sqlErr = model.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
 	var orderBys []exp.OrderedExpression
 	for _, order := range orders {
 		orderBys = append(orderBys, goqu.C(order).Asc())
 	}
 
-	var sql, args, sqlErr = core.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
+	var sql, args, sqlErr = model.Dialect.From(table.TableName).Order(orderBys...).ToSQL()
 	if sqlErr != nil {
 		t.Fatalf("Could not create SQL for %T: %s", zero, sqlErr)
 	}

@@ -1,11 +1,11 @@
-package core
+package model
 
 import (
 	"errors"
 
 	"github.com/doug-martin/goqu/v9"
 	"github.com/go-gorp/gorp/v3"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 func GetIn(executer gorp.SqlExecutor, records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {

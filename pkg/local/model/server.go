@@ -1,4 +1,4 @@
-package core
+package model
 
 type Server struct {
 	Port string `env:"PORT,notEmpty"`

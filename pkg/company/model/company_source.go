@@ -1,9 +1,9 @@
-package core
+package model
 
 import (
 	"errors"
 
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 type SourceType string

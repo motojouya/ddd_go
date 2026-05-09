@@ -1,4 +1,4 @@
-package core
+package model
 
 type NumberGetter interface {
 	GetNumber() ([]uint, error)

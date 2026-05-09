@@ -2,11 +2,11 @@ package repository
 
 import (
 	"github.com/go-gorp/gorp/v3"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 )
 
-func Mutate[Agr any, Dpd any, Nd any, In core.TransferableList[Agr, Dpd, Nd]](
+func Mutate[Agr any, Dpd any, Nd any, In model.TransferableList[Agr, Dpd, Nd]](
 	db gorp.SqlExecutor,
 	aggregate Agr,
 	depend Dpd,

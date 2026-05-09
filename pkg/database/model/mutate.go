@@ -1,8 +1,8 @@
-package core
+package model
 
 import (
 	"github.com/go-gorp/gorp/v3"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 /*

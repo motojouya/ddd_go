@@ -1,4 +1,4 @@
-package core
+package model
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/go-gorp/gorp/v3"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 func GetPaging(executer gorp.SqlExecutor, records interface{}, conditions map[string]interface{}, orders []Order, pager basic.Pager) ([]interface{}, error) {

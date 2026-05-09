@@ -6,7 +6,7 @@ import (
 
 	databaseMock "github.com/motojouya/ddd_go/pkg/database/mock"
 	repository "github.com/motojouya/ddd_go/pkg/queue/repository"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
 
@@ -31,7 +31,7 @@ func TestCreateWorker(t *testing.T) {
 		var insertCalled bool
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGet: func(i interface{}, keys ...interface{}) (interface{}, error) {
-				return (*queueCore.Worker)(nil), nil
+				return (*queueModel.Worker)(nil), nil
 			},
 			FakeInsert: func(list ...interface{}) error {
 				insertCalled = true
@@ -57,7 +57,7 @@ func TestCreateWorker(t *testing.T) {
 	})
 
 	t.Run("正常系: Worker既存（Insertされない）", func(t *testing.T) {
-		existing := queueCore.Worker{Name: workerName, MaxProcess: maxProcess}
+		existing := queueModel.Worker{Name: workerName, MaxProcess: maxProcess}
 		var insertCalled bool
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGet: func(i interface{}, keys ...interface{}) (interface{}, error) {
@@ -127,19 +127,19 @@ func TestCreateQueue(t *testing.T) {
 	queueName := "queue-1"
 	processOrder := 1
 
-	worker := queueCore.Worker{Name: workerName, MaxProcess: 5}
+	worker := queueModel.Worker{Name: workerName, MaxProcess: 5}
 
 	t.Run("正常系: Worker存在 → Queue新規作成", func(t *testing.T) {
 		var insertCalled bool
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Worker); ok {
-					*v = []queueCore.Worker{worker}
+				if v, ok := records.(*[]queueModel.Worker); ok {
+					*v = []queueModel.Worker{worker}
 				}
 				return nil, nil
 			},
 			FakeGet: func(i interface{}, keys ...interface{}) (interface{}, error) {
-				return (*queueCore.Queue)(nil), nil
+				return (*queueModel.Queue)(nil), nil
 			},
 			FakeInsert: func(list ...interface{}) error {
 				insertCalled = true
@@ -201,8 +201,8 @@ func TestCreateQueue(t *testing.T) {
 	t.Run("異常系: queueName空文字（NewQueue失敗）", func(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Worker); ok {
-					*v = []queueCore.Worker{worker}
+				if v, ok := records.(*[]queueModel.Worker); ok {
+					*v = []queueModel.Worker{worker}
 				}
 				return nil, nil
 			},
@@ -219,8 +219,8 @@ func TestCreateQueue(t *testing.T) {
 	t.Run("異常系: processOrder不正（NewQueue失敗）", func(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Worker); ok {
-					*v = []queueCore.Worker{worker}
+				if v, ok := records.(*[]queueModel.Worker); ok {
+					*v = []queueModel.Worker{worker}
 				}
 				return nil, nil
 			},
@@ -238,8 +238,8 @@ func TestCreateQueue(t *testing.T) {
 		expectedErr := errors.New("queue get error")
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Worker); ok {
-					*v = []queueCore.Worker{worker}
+				if v, ok := records.(*[]queueModel.Worker); ok {
+					*v = []queueModel.Worker{worker}
 				}
 				return nil, nil
 			},

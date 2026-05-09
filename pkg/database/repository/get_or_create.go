@@ -1,7 +1,7 @@
 package repository
 
 import (
-	database "github.com/motojouya/ddd_go/pkg/database/core"
+	database "github.com/motojouya/ddd_go/pkg/database/model"
 )
 
 func GetOrCreate[T database.Keyed](executor database.Executor, obj T) (T, error) {

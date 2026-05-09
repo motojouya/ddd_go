@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"github.com/motojouya/ddd_go/pkg/local/core"
+	"github.com/motojouya/ddd_go/pkg/local/model"
 )
 
 type ServerGetter interface {
-	GetServer() (*core.Server, error)
+	GetServer() (*model.Server, error)
 }
 
 type ServerGet struct{}
@@ -14,11 +14,11 @@ func NewServerGet() *ServerGet {
 	return &ServerGet{}
 }
 
-var serverConf *core.Server
+var serverConf *model.Server
 
-func (getter *ServerGet) GetServer() (*core.Server, error) {
+func (getter *ServerGet) GetServer() (*model.Server, error) {
 	if serverConf == nil {
-		var serverConfObj, err = GetEnv[core.Server]()
+		var serverConfObj, err = GetEnv[model.Server]()
 		if err != nil {
 			return nil, err
 		}

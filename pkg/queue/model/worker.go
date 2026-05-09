@@ -1,10 +1,10 @@
-package core
+package model
 
 import (
 	"strconv"
 
 	"github.com/go-gorp/gorp/v3"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 const WorkerTable = "worker"

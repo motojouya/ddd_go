@@ -1,10 +1,10 @@
-package core
+package model
 
 import (
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
 	"github.com/go-gorp/gorp/v3"
-	"github.com/motojouya/ddd_go/pkg/basic/core"
+	"github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 var Dialect = goqu.Dialect("postgres")
@@ -24,7 +24,7 @@ func SelectSingle[R any](executer gorp.SqlExecutor, table string, keys map[strin
 	}
 
 	if len(record) > 1 {
-		return nil, core.NewDuplicateError(table, keys, "Duplicate record found")
+		return nil, model.NewDuplicateError(table, keys, "Duplicate record found")
 	}
 
 	return &record[0], nil

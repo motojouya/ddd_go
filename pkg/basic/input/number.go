@@ -1,4 +1,4 @@
-package entry
+package input
 
 type Number struct {
 	Num uint `param:"num"`

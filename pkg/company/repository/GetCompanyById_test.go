@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 	"github.com/motojouya/ddd_go/pkg/company/repository"
-	"github.com/motojouya/ddd_go/pkg/company/core"
+	"github.com/motojouya/ddd_go/pkg/company/model"
 	dbmock "github.com/motojouya/ddd_go/pkg/database/mock"
 )
 
@@ -20,7 +20,7 @@ func (m mockIdGetter) GetId() ([]basic.Identifier, error) {
 }
 
 func TestGetCompanyById_Success(t *testing.T) {
-	expectedCompanies := []core.Company{
+	expectedCompanies := []model.Company{
 		{Id: "id-1", Code: "ABC12", Name: "Company A"},
 		{Id: "id-2", Code: "XYZ99", Name: "Company B"},
 	}
@@ -29,7 +29,7 @@ func TestGetCompanyById_Success(t *testing.T) {
 	executer := dbmock.SqlExecutorMock{
 		FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
 			capturedConditions = conditions
-			companies := records.(*[]core.Company)
+			companies := records.(*[]model.Company)
 			*companies = expectedCompanies
 			return nil, nil
 		},

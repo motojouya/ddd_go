@@ -1,10 +1,10 @@
-package core_test
+package model_test
 
 import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/motojouya/ddd_go/pkg/company/core"
+	"github.com/motojouya/ddd_go/pkg/company/model"
 	"github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
@@ -17,7 +17,7 @@ func TestNewCompanyCode_Valid(t *testing.T) {
 	}
 
 	for _, codeStr := range validCodes {
-		code, err := core.NewCompanyCode(codeStr)
+		code, err := model.NewCompanyCode(codeStr)
 		if err != nil {
 			t.Errorf("Valid code should not return error: %s, got error: %v", codeStr, err)
 		}
@@ -42,7 +42,7 @@ func TestNewCompanyCode_Invalid(t *testing.T) {
 	}
 
 	for _, codeStr := range invalidCodes {
-		code, err := core.NewCompanyCode(codeStr)
+		code, err := model.NewCompanyCode(codeStr)
 		if err == nil {
 			t.Errorf("Invalid code should return error: %s", codeStr)
 		}
@@ -58,10 +58,10 @@ func TestGenerateCompanyCode(t *testing.T) {
 
 	// Generate multiple codes to ensure they follow the pattern
 	for i := 0; i < 10; i++ {
-		code := core.GenerateCompanyCode(localer)
+		code := model.GenerateCompanyCode(localer)
 
 		// Verify the generated code is valid
-		_, err := core.NewCompanyCode(code.String())
+		_, err := model.NewCompanyCode(code.String())
 		if err != nil {
 			t.Errorf("Generated code should be valid: %s, got error: %v", code.String(), err)
 		}
@@ -74,7 +74,7 @@ func TestGenerateCompanyCode(t *testing.T) {
 }
 
 func TestCompanyCode_String(t *testing.T) {
-	code, _ := core.NewCompanyCode("ABC12")
+	code, _ := model.NewCompanyCode("ABC12")
 	if diff := cmp.Diff("ABC12", code.String()); diff != "" {
 		t.Errorf("CompanyCode.String() mismatch (-want +got):\n%s", diff)
 	}

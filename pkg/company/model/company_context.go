@@ -1,4 +1,4 @@
-package core
+package model
 
 type Companied interface {
 	GetCompany() Company

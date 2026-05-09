@@ -5,8 +5,8 @@ import (
 	"database/sql"
 
 	"github.com/go-gorp/gorp/v3"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 )
 
 type SqlExecutorMock struct {
@@ -28,7 +28,7 @@ type SqlExecutorMock struct {
 	FakeQueryRow        func(query string, args ...interface{}) *sql.Row
 	FakeGetIn           func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error)
 	FakeGetMax          func(records interface{}, maxColName string, conditions map[string]interface{}) (int, error)
-	FakeGetPaging       func(records interface{}, conditions map[string]interface{}, orders []core.Order, pager basic.Pager) ([]interface{}, error)
+	FakeGetPaging       func(records interface{}, conditions map[string]interface{}, orders []model.Order, pager basic.Pager) ([]interface{}, error)
 }
 
 func (mock SqlExecutorMock) WithContext(ctx context.Context) gorp.SqlExecutor {
@@ -103,6 +103,6 @@ func (mock SqlExecutorMock) GetMax(records interface{}, maxColName string, condi
 	return mock.FakeGetMax(records, maxColName, conditions)
 }
 
-func (mock SqlExecutorMock) GetPaging(records interface{}, conditions map[string]interface{}, orders []core.Order, pager basic.Pager) ([]interface{}, error) {
+func (mock SqlExecutorMock) GetPaging(records interface{}, conditions map[string]interface{}, orders []model.Order, pager basic.Pager) ([]interface{}, error) {
 	return mock.FakeGetPaging(records, conditions, orders, pager)
 }

@@ -3,12 +3,12 @@ package repository
 import (
 	"errors"
 
-	"github.com/motojouya/ddd_go/pkg/company/core"
-	database "github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/ddd_go/pkg/company/model"
+	database "github.com/motojouya/ddd_go/pkg/database/model"
 	local "github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
-func GetMaxNum[Nd database.Keyed](db database.Executor, node Nd, company core.Company) (uint, error) {
+func GetMaxNum[Nd database.Keyed](db database.Executor, node Nd, company model.Company) (uint, error) {
 	conditions := map[string]interface{}{
 		"company_id": company.Id,
 	}
@@ -21,7 +21,7 @@ func GetMaxNum[Nd database.Keyed](db database.Executor, node Nd, company core.Co
 	return uint(max + 1), nil
 }
 
-func CreateWithIdAndNumber[Agr any, Dpd core.Companied, Nd database.Keyed, In database.TransferableWithIdAndNumber[Agr, Dpd, Nd]](
+func CreateWithIdAndNumber[Agr any, Dpd model.Companied, Nd database.Keyed, In database.TransferableWithIdAndNumber[Agr, Dpd, Nd]](
 	db database.Executor,
 	lcl local.Localer,
 	aggregate Agr,

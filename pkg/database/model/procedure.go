@@ -1,10 +1,10 @@
-package core
+package model
 
 import (
 	"slices"
 
 	"github.com/go-gorp/gorp/v3"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 type Keyed interface {

@@ -3,14 +3,14 @@ package store_test
 import (
 	"testing"
 
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 	util "github.com/motojouya/ddd_go/pkg/database/test"
 )
 
-var orp core.ORPer
+var orp model.ORPer
 
 func TestMain(m *testing.M) {
-	util.ExecuteDatabaseTest("../../../", func(orpArg core.ORPer) int {
+	util.ExecuteDatabaseTest("../../../", func(orpArg model.ORPer) int {
 		orp = orpArg
 		return m.Run()
 	})

@@ -1,10 +1,10 @@
-package core
+package model
 
 import (
 	"database/sql/driver"
 	"regexp"
 
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 	"github.com/motojouya/ddd_go/pkg/local/repository"
 )
 

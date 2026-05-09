@@ -5,43 +5,43 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 	"github.com/motojouya/ddd_go/pkg/company/repository"
-	"github.com/motojouya/ddd_go/pkg/company/core"
+	"github.com/motojouya/ddd_go/pkg/company/model"
 	dbmock "github.com/motojouya/ddd_go/pkg/database/mock"
 )
 
 type mockCompanyCodeGetter struct {
-	codes []core.CompanyCode
+	codes []model.CompanyCode
 	err   error
 }
 
-func (m mockCompanyCodeGetter) GetCompanyCode() ([]core.CompanyCode, error) {
+func (m mockCompanyCodeGetter) GetCompanyCode() ([]model.CompanyCode, error) {
 	return m.codes, m.err
 }
 
 func TestGetCompanyByCode_Success(t *testing.T) {
-	expectedCompany := core.Company{Id: "id-1", Code: "ABC12", Name: "Company A"}
+	expectedCompany := model.Company{Id: "id-1", Code: "ABC12", Name: "Company A"}
 
 	var capturedConditions map[string][]interface{}
 	executer := dbmock.SqlExecutorMock{
 		FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
 			capturedConditions = conditions
-			companies := records.(*[]core.Company)
-			*companies = []core.Company{expectedCompany}
+			companies := records.(*[]model.Company)
+			*companies = []model.Company{expectedCompany}
 			return nil, nil
 		},
 	}
 
-	code, _ := core.NewCompanyCode("ABC12")
-	codeGetter := mockCompanyCodeGetter{codes: []core.CompanyCode{code}}
+	code, _ := model.NewCompanyCode("ABC12")
+	codeGetter := mockCompanyCodeGetter{codes: []model.CompanyCode{code}}
 
 	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err != nil {
 		t.Errorf("Expected no error, got: %v", err)
 	}
 
-	expected := []core.Company{expectedCompany}
+	expected := []model.Company{expectedCompany}
 	if diff := cmp.Diff(expected, result); diff != "" {
 		t.Errorf("Company mismatch (-want +got):\n%s", diff)
 	}
@@ -55,29 +55,29 @@ func TestGetCompanyByCode_Success(t *testing.T) {
 }
 
 func TestGetCompanyByCode_MultipleCodes(t *testing.T) {
-	companyA := core.Company{Id: "id-1", Code: "ABC12", Name: "Company A"}
-	companyB := core.Company{Id: "id-2", Code: "DEF34", Name: "Company B"}
+	companyA := model.Company{Id: "id-1", Code: "ABC12", Name: "Company A"}
+	companyB := model.Company{Id: "id-2", Code: "DEF34", Name: "Company B"}
 
 	var capturedConditions map[string][]interface{}
 	executer := dbmock.SqlExecutorMock{
 		FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
 			capturedConditions = conditions
-			companies := records.(*[]core.Company)
-			*companies = []core.Company{companyA, companyB}
+			companies := records.(*[]model.Company)
+			*companies = []model.Company{companyA, companyB}
 			return nil, nil
 		},
 	}
 
-	codeA, _ := core.NewCompanyCode("ABC12")
-	codeB, _ := core.NewCompanyCode("DEF34")
-	codeGetter := mockCompanyCodeGetter{codes: []core.CompanyCode{codeA, codeB}}
+	codeA, _ := model.NewCompanyCode("ABC12")
+	codeB, _ := model.NewCompanyCode("DEF34")
+	codeGetter := mockCompanyCodeGetter{codes: []model.CompanyCode{codeA, codeB}}
 
 	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err != nil {
 		t.Fatalf("Expected no error, got: %v", err)
 	}
 
-	expected := []core.Company{companyA, companyB}
+	expected := []model.Company{companyA, companyB}
 	if diff := cmp.Diff(expected, result); diff != "" {
 		t.Errorf("Company mismatch (-want +got):\n%s", diff)
 	}
@@ -138,8 +138,8 @@ func TestGetCompanyByCode_GetInError(t *testing.T) {
 		},
 	}
 
-	code, _ := core.NewCompanyCode("ABC12")
-	codeGetter := mockCompanyCodeGetter{codes: []core.CompanyCode{code}}
+	code, _ := model.NewCompanyCode("ABC12")
+	codeGetter := mockCompanyCodeGetter{codes: []model.CompanyCode{code}}
 
 	result, err := repository.GetCompanyByCode(executer, codeGetter)
 	if err == nil {

@@ -1,11 +1,11 @@
-package core_test
+package model_test
 
 // FIXME `stretchr/testify/assert` から脱却
 import (
 	"strconv"
 	"testing"
 
-	"github.com/motojouya/ddd_go/pkg/basic/core"
+	"github.com/motojouya/ddd_go/pkg/basic/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +15,7 @@ func TestInvalidArgumentError(t *testing.T) {
 	var message = "This is a test invalid argument error"
 	var httpStatus uint = 400
 
-	var err = core.NewInvalidArgumentError(name, value, message)
+	var err = model.NewInvalidArgumentError(name, value, message)
 
 	assert.Equal(t, name, err.Name)
 	assert.Equal(t, value, err.Value)
@@ -35,7 +35,7 @@ func TestNewRangeError(t *testing.T) {
 	var message = "This is a test range error"
 	var httpStatus uint = 400
 
-	var err = core.NewRangeError(name, value, min, max, message)
+	var err = model.NewRangeError(name, value, min, max, message)
 
 	assert.Equal(t, name, err.Name)
 	assert.Equal(t, value, err.Value)
@@ -54,7 +54,7 @@ func TestNewAuthenticationError(t *testing.T) {
 	var message = "This is a test system config error"
 	var httpStatus uint = 401
 
-	var err = core.NewAuthenticationError(userIdentifier, message)
+	var err = model.NewAuthenticationError(userIdentifier, message)
 
 	assert.Equal(t, userIdentifier, err.UserIdentifier)
 	assert.Equal(t, message, err.Unwrap().Error())
@@ -73,7 +73,7 @@ func TestNewNotFoundError(t *testing.T) {
 	var message = "This is a test range error"
 	var httpStatus uint = 400
 
-	var err = core.NewNotFoundError(table, keys, message)
+	var err = model.NewNotFoundError(table, keys, message)
 
 	assert.Equal(t, table, err.Table)
 	var val, exist = err.Keys[key]
@@ -95,7 +95,7 @@ func TestNewDuplicateError(t *testing.T) {
 	var message = "This is a test range error"
 	var httpStatus uint = 400
 
-	var err = core.NewDuplicateError(table, keys, message)
+	var err = model.NewDuplicateError(table, keys, message)
 
 	assert.Equal(t, table, err.Table)
 	var val, exist = err.Keys[key]
@@ -114,7 +114,7 @@ func TestNewNilError(t *testing.T) {
 	var message = "This is a test nil error"
 	var httpStatus uint = 400
 
-	var err = core.NewNilError(name, message)
+	var err = model.NewNilError(name, message)
 
 	assert.Equal(t, name, err.Name)
 	assert.Equal(t, message, err.Unwrap().Error())
@@ -131,7 +131,7 @@ func TestNewSystemConfigError(t *testing.T) {
 	var message = "This is a test system config error"
 	var httpStatus uint = 500
 
-	var err = core.NewSystemConfigError(name, message)
+	var err = model.NewSystemConfigError(name, message)
 
 	assert.Equal(t, name, err.Name)
 	assert.Equal(t, message, err.Unwrap().Error())
@@ -145,12 +145,12 @@ func TestNewSystemConfigError(t *testing.T) {
 func TestNewPropertyError(t *testing.T) {
 	var name = "TestNilError"
 	var message = "This is a test nil error"
-	var err = core.NewNilError(name, message)
+	var err = model.NewNilError(name, message)
 
 	var prop = "TestPath"
 	var httpStatus uint = 210
 
-	var propertyError = core.NewPropertyError(prop, httpStatus, err)
+	var propertyError = model.NewPropertyError(prop, httpStatus, err)
 
 	assert.Equal(t, prop, propertyError.Property)
 	assert.Equal(t, httpStatus, propertyError.HttpStatusCode)
@@ -164,12 +164,12 @@ func TestNewPropertyError(t *testing.T) {
 func TestCreatePropertyError(t *testing.T) {
 	var name = "TestNilError"
 	var message = "This is a test nil error"
-	var err = core.NewNilError(name, message)
+	var err = model.NewNilError(name, message)
 
 	var prop = "TestPath"
 	var httpStatus uint = 400
 
-	var propertyError = core.CreatePropertyError(prop, err)
+	var propertyError = model.CreatePropertyError(prop, err)
 
 	assert.Equal(t, prop, propertyError.Property)
 	assert.Equal(t, httpStatus, propertyError.HttpStatusCode)
@@ -183,12 +183,12 @@ func TestCreatePropertyError(t *testing.T) {
 func TestPropertyErrorAdd(t *testing.T) {
 	var name = "TestNilError"
 	var message = "This is a test nil error"
-	var err = core.NewNilError(name, message)
+	var err = model.NewNilError(name, message)
 
 	var prop = "TestPath"
 	var httpStatus uint = 210
 
-	var propertyError = core.NewPropertyError(prop, httpStatus, err)
+	var propertyError = model.NewPropertyError(prop, httpStatus, err)
 	var path = "additional"
 	var added = propertyError.Add(path)
 
@@ -204,12 +204,12 @@ func TestPropertyErrorAdd(t *testing.T) {
 func TestPropertyErrorChange(t *testing.T) {
 	var name = "TestNilError"
 	var message = "This is a test nil error"
-	var err = core.NewNilError(name, message)
+	var err = model.NewNilError(name, message)
 
 	var prop = "TestPath"
 	var httpStatus uint = 210
 
-	var propertyError = core.NewPropertyError(prop, httpStatus, err)
+	var propertyError = model.NewPropertyError(prop, httpStatus, err)
 	var path = "additional"
 	var changedStatus uint = 220
 	var added = propertyError.Change(path, changedStatus)
@@ -226,14 +226,14 @@ func TestPropertyErrorChange(t *testing.T) {
 func TestAddPropertyError(t *testing.T) {
 	var name = "TestNilError"
 	var message = "This is a test nil error"
-	var err = core.NewNilError(name, message)
+	var err = model.NewNilError(name, message)
 
 	var prop = "TestPath"
-	var propertyError = core.AddPropertyError(prop, err)
+	var propertyError = model.AddPropertyError(prop, err)
 
 	var wrapPath = "additional"
 	var httpStatus uint = 400
-	var wrappedPropertyError = core.AddPropertyError(wrapPath, propertyError)
+	var wrappedPropertyError = model.AddPropertyError(wrapPath, propertyError)
 
 	assert.Equal(t, wrapPath+"."+prop, wrappedPropertyError.Property)
 	assert.Equal(t, httpStatus, wrappedPropertyError.HttpStatusCode)
@@ -247,15 +247,15 @@ func TestAddPropertyError(t *testing.T) {
 func TestChangePropertyError(t *testing.T) {
 	var name = "TestNilError"
 	var message = "This is a test nil error"
-	var err = core.NewNilError(name, message)
+	var err = model.NewNilError(name, message)
 
 	var prop = "TestPath"
 	var httpStatus uint = 210
-	var propertyError = core.ChangePropertyError(prop, err, httpStatus)
+	var propertyError = model.ChangePropertyError(prop, err, httpStatus)
 
 	var wrapPath = "additional"
 	var wraphttpStatus uint = 210
-	var wrappedPropertyError = core.ChangePropertyError(wrapPath, propertyError, wraphttpStatus)
+	var wrappedPropertyError = model.ChangePropertyError(wrapPath, propertyError, wraphttpStatus)
 
 	assert.Equal(t, wrapPath+"."+prop, wrappedPropertyError.Property)
 	assert.Equal(t, wraphttpStatus, wrappedPropertyError.HttpStatusCode)
@@ -274,7 +274,7 @@ func TestAddPropertyErrorNil(t *testing.T) {
 	}()
 
 	var prop = "TestPath"
-	var _ = core.AddPropertyError(prop, nil)
+	var _ = model.AddPropertyError(prop, nil)
 
 	t.Error("Expected panic for nil source error, but did not panic")
 }
@@ -288,7 +288,7 @@ func TestChangePropertyErrorNil(t *testing.T) {
 
 	var prop = "TestPath"
 	var httpStatus uint = 210
-	var _ = core.ChangePropertyError(prop, nil, httpStatus)
+	var _ = model.ChangePropertyError(prop, nil, httpStatus)
 
 	t.Error("Expected panic for nil source error, but did not panic")
 }

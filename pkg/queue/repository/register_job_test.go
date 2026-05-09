@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	basicCore "github.com/motojouya/ddd_go/pkg/basic/core"
+	basicModel "github.com/motojouya/ddd_go/pkg/basic/model"
 	databaseMock "github.com/motojouya/ddd_go/pkg/database/mock"
 	localMock "github.com/motojouya/ddd_go/pkg/local/mock"
 	repository "github.com/motojouya/ddd_go/pkg/queue/repository"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
 
@@ -17,12 +17,12 @@ func TestRegisterJob(t *testing.T) {
 	queueName := "queue-1"
 	workerName := "worker-1"
 	source := "source-1"
-	procedure := string(queueCore.ProcedureAllocate)
+	procedure := string(queueModel.ProcedureAllocate)
 	jsonData := map[string]string{"key": "value"}
-	jobID := basicCore.Identifier("job-id-001")
+	jobID := basicModel.Identifier("job-id-001")
 	now := time.Date(2026, 3, 13, 12, 0, 0, 0, time.UTC)
 
-	queue := queueCore.Queue{
+	queue := queueModel.Queue{
 		Name:         queueName,
 		WorkerName:   workerName,
 		ProcessOrder: 1,
@@ -34,7 +34,7 @@ func TestRegisterJob(t *testing.T) {
 
 	makeLocaler := func() localMock.LocalerMock {
 		return localMock.LocalerMock{
-			FakeGenerateID: func() (basicCore.Identifier, error) {
+			FakeGenerateID: func() (basicModel.Identifier, error) {
 				return jobID, nil
 			},
 			FakeGetNow: func() time.Time {
@@ -47,8 +47,8 @@ func TestRegisterJob(t *testing.T) {
 		var insertedJob interface{}
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Queue); ok {
-					*v = []queueCore.Queue{queue}
+				if v, ok := records.(*[]queueModel.Queue); ok {
+					*v = []queueModel.Queue{queue}
 				}
 				return nil, nil
 			},
@@ -124,8 +124,8 @@ func TestRegisterJob(t *testing.T) {
 		expectedErr := errors.New("generate id error")
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Queue); ok {
-					*v = []queueCore.Queue{queue}
+				if v, ok := records.(*[]queueModel.Queue); ok {
+					*v = []queueModel.Queue{queue}
 				}
 				return nil, nil
 			},
@@ -133,8 +133,8 @@ func TestRegisterJob(t *testing.T) {
 
 		storeMock := makeStoreMock(sqlMock)
 		localer := localMock.LocalerMock{
-			FakeGenerateID: func() (basicCore.Identifier, error) {
-				return basicCore.Identifier(""), expectedErr
+			FakeGenerateID: func() (basicModel.Identifier, error) {
+				return basicModel.Identifier(""), expectedErr
 			},
 			FakeGetNow: func() time.Time {
 				return now
@@ -151,8 +151,8 @@ func TestRegisterJob(t *testing.T) {
 	t.Run("異常系: NewJobエラー（procedure不正）", func(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Queue); ok {
-					*v = []queueCore.Queue{queue}
+				if v, ok := records.(*[]queueModel.Queue); ok {
+					*v = []queueModel.Queue{queue}
 				}
 				return nil, nil
 			},
@@ -172,8 +172,8 @@ func TestRegisterJob(t *testing.T) {
 		expectedErr := errors.New("insert error")
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Queue); ok {
-					*v = []queueCore.Queue{queue}
+				if v, ok := records.(*[]queueModel.Queue); ok {
+					*v = []queueModel.Queue{queue}
 				}
 				return nil, nil
 			},

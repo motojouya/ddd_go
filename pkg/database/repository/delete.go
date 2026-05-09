@@ -2,10 +2,10 @@ package repository
 
 import (
 	"github.com/go-gorp/gorp/v3"
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 )
 
-func Delete[Agr any, Dpd any, Nd core.Keyed, In core.Transferable[Agr, Dpd, Nd]](
+func Delete[Agr any, Dpd any, Nd model.Keyed, In model.Transferable[Agr, Dpd, Nd]](
 	db gorp.SqlExecutor,
 	aggregate Agr,
 	depend Dpd,

@@ -14,13 +14,13 @@ import (
 
 	databaseRepository "github.com/motojouya/ddd_go/pkg/database/repository"
 	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
-	localCore "github.com/motojouya/ddd_go/pkg/local/core"
+	localModel "github.com/motojouya/ddd_go/pkg/local/model"
 )
 
 type ServeCmd struct{}
 
 func (srv *ServeCmd) Run() error {
-	serverConf, err := localRepository.GetEnv[localCore.Server]()
+	serverConf, err := localRepository.GetEnv[localModel.Server]()
 	if err != nil {
 		fmt.Println("failed to get server config:", err)
 	}

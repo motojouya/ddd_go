@@ -3,13 +3,13 @@ package repository
 import (
 	"errors"
 
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	"github.com/motojouya/ddd_go/pkg/company/core"
-	database "github.com/motojouya/ddd_go/pkg/database/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
+	"github.com/motojouya/ddd_go/pkg/company/model"
+	database "github.com/motojouya/ddd_go/pkg/database/model"
 	local "github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
-func CreateRootAndMulti[Agr any, Dpd core.Companied, Nd database.Keyed, Sb any, In database.TransferableRootAndMulti[Agr, Dpd, Nd, Sb]](
+func CreateRootAndMulti[Agr any, Dpd model.Companied, Nd database.Keyed, Sb any, In database.TransferableRootAndMulti[Agr, Dpd, Nd, Sb]](
 	db database.Executor,
 	lcl local.Localer,
 	aggregate Agr,

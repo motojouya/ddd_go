@@ -6,12 +6,12 @@ import (
 
 	"github.com/caarlos0/env/v11"
 	"github.com/google/uuid"
-	basicCore "github.com/motojouya/ddd_go/pkg/basic/core"
+	basicModel "github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 type Localer interface {
 	GenerateRamdomString(length int, source string) string
-	GenerateID() (basicCore.Identifier, error)
+	GenerateID() (basicModel.Identifier, error)
 	GetNow() time.Time
 }
 
@@ -29,15 +29,15 @@ func (l Local) GenerateRamdomString(length int, source string) string {
 	return string(b)
 }
 
-func (l Local) GenerateID() (basicCore.Identifier, error) {
+func (l Local) GenerateID() (basicModel.Identifier, error) {
 	uuidValue, err := uuid.NewV7()
 	if err != nil {
-		return basicCore.Identifier(""), err
+		return basicModel.Identifier(""), err
 	}
 
-	id, err := basicCore.NewIdentifier(uuidValue.String())
+	id, err := basicModel.NewIdentifier(uuidValue.String())
 	if err != nil {
-		return basicCore.Identifier(""), err
+		return basicModel.Identifier(""), err
 	}
 
 	return id, nil

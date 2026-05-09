@@ -12,7 +12,7 @@ import (
 	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
 	qRepository "github.com/motojouya/ddd_go/pkg/queue/repository"
 	qController "github.com/motojouya/ddd_go/pkg/queue/controller"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 	qStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
 
@@ -23,7 +23,7 @@ type WorkCmd struct {
 
 // FIXME gopsutilで同じworkerを複数process起動できるか制御できる https://mikoto2000.blogspot.com/2024/05/go-gopsutil.html
 func (wrk *WorkCmd) Run() error {
-	route := queueCore.NewJobRouter()
+	route := queueModel.NewJobRouter()
 	err := RegisterProcedure(route)
 	if err != nil {
 		log.Fatal(err)
@@ -61,7 +61,7 @@ func (wrk *WorkCmd) Run() error {
 	return nil
 }
 
-func RegisterProcedure(route queueCore.JobRouter) error {
+func RegisterProcedure(route queueModel.JobRouter) error {
 	// jobを追加していく
 	return nil
 }

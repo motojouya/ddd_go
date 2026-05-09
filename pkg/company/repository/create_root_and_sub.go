@@ -3,12 +3,12 @@ package repository
 import (
 	"errors"
 
-	"github.com/motojouya/ddd_go/pkg/company/core"
-	database "github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/ddd_go/pkg/company/model"
+	database "github.com/motojouya/ddd_go/pkg/database/model"
 	local "github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
-func CreateRootAndSub[Agr any, Dpd core.Companied, Nd database.Keyed, Sb any, In database.TransferableRootAndSub[Agr, Dpd, Nd, Sb]](
+func CreateRootAndSub[Agr any, Dpd model.Companied, Nd database.Keyed, Sb any, In database.TransferableRootAndSub[Agr, Dpd, Nd, Sb]](
 	db database.Executor,
 	lcl local.Localer,
 	aggregate Agr,

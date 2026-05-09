@@ -1,21 +1,21 @@
-package core_test
+package model_test
 
 import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	core "github.com/motojouya/ddd_go/pkg/queue/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
+	model "github.com/motojouya/ddd_go/pkg/queue/model"
 )
 
 func TestNewWorker_Success(t *testing.T) {
-	worker, err := core.NewWorker("worker-1", 5)
+	worker, err := model.NewWorker("worker-1", 5)
 
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := core.Worker{
+	expected := model.Worker{
 		Name:       "worker-1",
 		MaxProcess: 5,
 	}
@@ -26,7 +26,7 @@ func TestNewWorker_Success(t *testing.T) {
 }
 
 func TestNewWorker_EmptyName(t *testing.T) {
-	_, err := core.NewWorker("", 5)
+	_, err := model.NewWorker("", 5)
 
 	if err == nil {
 		t.Fatal("expected error for empty name, got nil")
@@ -38,7 +38,7 @@ func TestNewWorker_EmptyName(t *testing.T) {
 }
 
 func TestNewWorker_InvalidMaxProcess_Zero(t *testing.T) {
-	_, err := core.NewWorker("worker-1", 0)
+	_, err := model.NewWorker("worker-1", 0)
 
 	if err == nil {
 		t.Fatal("expected error for zero maxProcess, got nil")
@@ -50,7 +50,7 @@ func TestNewWorker_InvalidMaxProcess_Zero(t *testing.T) {
 }
 
 func TestNewWorker_InvalidMaxProcess_Over1000(t *testing.T) {
-	_, err := core.NewWorker("worker-1", 1001)
+	_, err := model.NewWorker("worker-1", 1001)
 
 	if err == nil {
 		t.Fatal("expected error for maxProcess over 1000, got nil")

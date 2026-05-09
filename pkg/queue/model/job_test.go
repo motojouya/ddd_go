@@ -1,29 +1,29 @@
-package core_test
+package model_test
 
 import (
 	"testing"
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	core "github.com/motojouya/ddd_go/pkg/queue/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
+	model "github.com/motojouya/ddd_go/pkg/queue/model"
 )
 
 func TestNewJob_Success(t *testing.T) {
 	id := basic.Identifier("job-123")
-	queue := core.Queue{Name: "queue-1", WorkerName: "worker-1"}
+	queue := model.Queue{Name: "queue-1", WorkerName: "worker-1"}
 	source := "source-1"
 	procedure := "LOCATION_STOCK_PROCEDURE_ALLOCATE"
 	jsonData := map[string]string{"key": "value"}
 	registerDate := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
-	job, err := core.NewJob(id, queue, source, procedure, jsonData, registerDate)
+	job, err := model.NewJob(id, queue, source, procedure, jsonData, registerDate)
 
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := core.Job{
+	expected := model.Job{
 		Id:           basic.Identifier("job-123"),
 		Queue:        "queue-1",
 		Source:       "source-1",
@@ -44,10 +44,10 @@ func TestNewJob_Success(t *testing.T) {
 
 func TestNewJob_InvalidProcedure(t *testing.T) {
 	id := basic.Identifier("job-123")
-	queue := core.Queue{Name: "queue-1", WorkerName: "worker-1"}
+	queue := model.Queue{Name: "queue-1", WorkerName: "worker-1"}
 	registerDate := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
-	_, err := core.NewJob(id, queue, "source-1", "INVALID", nil, registerDate)
+	_, err := model.NewJob(id, queue, "source-1", "INVALID", nil, registerDate)
 
 	if err == nil {
 		t.Fatal("expected error for invalid procedure, got nil")
@@ -60,10 +60,10 @@ func TestNewJob_InvalidProcedure(t *testing.T) {
 
 func TestNewJob_EmptyQueue(t *testing.T) {
 	id := basic.Identifier("job-123")
-	queue := core.Queue{Name: "", WorkerName: "worker-1"}
+	queue := model.Queue{Name: "", WorkerName: "worker-1"}
 	registerDate := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
-	_, err := core.NewJob(id, queue, "source-1", "LOCATION_STOCK_PROCEDURE_ALLOCATE", nil, registerDate)
+	_, err := model.NewJob(id, queue, "source-1", "LOCATION_STOCK_PROCEDURE_ALLOCATE", nil, registerDate)
 
 	if err == nil {
 		t.Fatal("expected error for empty queue, got nil")
@@ -76,10 +76,10 @@ func TestNewJob_EmptyQueue(t *testing.T) {
 
 func TestNewJob_EmptySource(t *testing.T) {
 	id := basic.Identifier("job-123")
-	queue := core.Queue{Name: "queue-1", WorkerName: "worker-1"}
+	queue := model.Queue{Name: "queue-1", WorkerName: "worker-1"}
 	registerDate := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
 
-	_, err := core.NewJob(id, queue, "", "LOCATION_STOCK_PROCEDURE_ALLOCATE", nil, registerDate)
+	_, err := model.NewJob(id, queue, "", "LOCATION_STOCK_PROCEDURE_ALLOCATE", nil, registerDate)
 
 	if err == nil {
 		t.Fatal("expected error for empty source, got nil")
@@ -91,7 +91,7 @@ func TestNewJob_EmptySource(t *testing.T) {
 }
 
 func TestGetProcedure_Valid(t *testing.T) {
-	err := core.GetProcedure("LOCATION_STOCK_PROCEDURE_ALLOCATE")
+	err := model.GetProcedure("LOCATION_STOCK_PROCEDURE_ALLOCATE")
 
 	if err != nil {
 		t.Errorf("unexpected error for valid procedure: %v", err)
@@ -99,7 +99,7 @@ func TestGetProcedure_Valid(t *testing.T) {
 }
 
 func TestGetProcedure_Invalid(t *testing.T) {
-	err := core.GetProcedure("INVALID")
+	err := model.GetProcedure("INVALID")
 
 	if err == nil {
 		t.Fatal("expected error for invalid procedure, got nil")
@@ -107,7 +107,7 @@ func TestGetProcedure_Invalid(t *testing.T) {
 }
 
 func TestJob_Keys(t *testing.T) {
-	job := core.Job{Id: basic.Identifier("job-123")}
+	job := model.Job{Id: basic.Identifier("job-123")}
 
 	keys := job.Keys()
 
@@ -119,7 +119,7 @@ func TestJob_Keys(t *testing.T) {
 }
 
 func TestJob_GetId(t *testing.T) {
-	job := core.Job{Id: basic.Identifier("job-123")}
+	job := model.Job{Id: basic.Identifier("job-123")}
 
 	ids, err := job.GetId()
 

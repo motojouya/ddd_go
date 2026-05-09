@@ -1,4 +1,4 @@
-package core
+package model
 
 type Pager struct {
 	Cursor uint `query:"cursor"`

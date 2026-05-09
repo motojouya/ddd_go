@@ -2,26 +2,26 @@ package store
 
 import (
 	"github.com/doug-martin/goqu/v9"
-	database "github.com/motojouya/ddd_go/pkg/database/core"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	database "github.com/motojouya/ddd_go/pkg/database/model"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 )
 
-func SelectWorkerByQueue(db database.Executor, queueName string, forUpdate bool) (*queueCore.Worker, error) {
+func SelectWorkerByQueue(db database.Executor, queueName string, forUpdate bool) (*queueModel.Worker, error) {
 	query := database.Dialect.Select(
-		goqu.I(queueCore.WorkerAlias+".name"),
-		goqu.I(queueCore.WorkerAlias+".max_process"),
-	).From(goqu.T(queueCore.WorkerTable).As(queueCore.WorkerAlias)).
+		goqu.I(queueModel.WorkerAlias+".name"),
+		goqu.I(queueModel.WorkerAlias+".max_process"),
+	).From(goqu.T(queueModel.WorkerTable).As(queueModel.WorkerAlias)).
 		InnerJoin(
-			goqu.T(queueCore.QueueTable).As(queueCore.QueueAlias),
-			goqu.On(goqu.I(queueCore.WorkerAlias+".name").Eq(goqu.I(queueCore.QueueAlias+".worker_name"))),
+			goqu.T(queueModel.QueueTable).As(queueModel.QueueAlias),
+			goqu.On(goqu.I(queueModel.WorkerAlias+".name").Eq(goqu.I(queueModel.QueueAlias+".worker_name"))),
 		).
-		Where(goqu.I(queueCore.QueueAlias + ".name").Eq(queueName))
+		Where(goqu.I(queueModel.QueueAlias + ".name").Eq(queueName))
 
 	if forUpdate {
 		query = query.ForUpdate(goqu.Wait)
 	}
 
-	workers, err := database.Select[queueCore.Worker](db, query)
+	workers, err := database.Select[queueModel.Worker](db, query)
 	if err != nil {
 		return nil, err
 	}
@@ -33,6 +33,6 @@ func SelectWorkerByQueue(db database.Executor, queueName string, forUpdate bool)
 	return &workers[0], nil
 }
 
-func (s *queueStore) SelectWorkerByQueue(queueName string, forUpdate bool) (*queueCore.Worker, error) {
+func (s *queueStore) SelectWorkerByQueue(queueName string, forUpdate bool) (*queueModel.Worker, error) {
 	return SelectWorkerByQueue(s.ORPer, queueName, forUpdate)
 }

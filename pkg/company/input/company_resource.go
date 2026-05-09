@@ -1,7 +1,7 @@
-package entry
+package input
 
 import (
-	basic "github.com/motojouya/ddd_go/pkg/basic/entry"
+	basic "github.com/motojouya/ddd_go/pkg/basic/input"
 )
 
 type CompanyResource struct {

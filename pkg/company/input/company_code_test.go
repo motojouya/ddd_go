@@ -1,29 +1,29 @@
-package entry_test
+package input_test
 
 import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/motojouya/ddd_go/pkg/company/core"
-	"github.com/motojouya/ddd_go/pkg/company/entry"
+	"github.com/motojouya/ddd_go/pkg/company/model"
+	"github.com/motojouya/ddd_go/pkg/company/input"
 )
 
 func TestCompanyCode_GetCompanyCode_Valid(t *testing.T) {
-	param := entry.CompanyCode{Code: "ABC12"}
+	param := input.CompanyCode{Code: "ABC12"}
 
 	codes, err := param.GetCompanyCode()
 	if err != nil {
 		t.Errorf("Valid code should not return error: %v", err)
 	}
 
-	expected := []core.CompanyCode{core.CompanyCode("ABC12")}
+	expected := []model.CompanyCode{model.CompanyCode("ABC12")}
 	if diff := cmp.Diff(expected, codes); diff != "" {
 		t.Errorf("CompanyCode mismatch (-want +got):\n%s", diff)
 	}
 }
 
 func TestCompanyCode_GetCompanyCode_Empty(t *testing.T) {
-	param := entry.CompanyCode{Code: ""}
+	param := input.CompanyCode{Code: ""}
 
 	codes, err := param.GetCompanyCode()
 	if err == nil {
@@ -45,7 +45,7 @@ func TestCompanyCode_GetCompanyCode_Invalid(t *testing.T) {
 	}
 
 	for _, code := range invalidCodes {
-		param := entry.CompanyCode{Code: code}
+		param := input.CompanyCode{Code: code}
 
 		resultCodes, err := param.GetCompanyCode()
 		if err == nil {

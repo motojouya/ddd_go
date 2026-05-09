@@ -1,13 +1,13 @@
 package store
 
 import (
-	database "github.com/motojouya/ddd_go/pkg/database/core"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	database "github.com/motojouya/ddd_go/pkg/database/model"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 )
 
 type QueueStore interface {
 	database.ORPer
-	SelectWorkerByQueue(queueName string, forUpdate bool) (*queueCore.Worker, error)
+	SelectWorkerByQueue(queueName string, forUpdate bool) (*queueModel.Worker, error)
 }
 
 type queueStore struct {

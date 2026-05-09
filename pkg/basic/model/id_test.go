@@ -1,10 +1,10 @@
-package core_test
+package model_test
 
 import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/motojouya/ddd_go/pkg/basic/core"
+	"github.com/motojouya/ddd_go/pkg/basic/model"
 )
 
 func TestNewIdentifier_Valid(t *testing.T) {
@@ -16,7 +16,7 @@ func TestNewIdentifier_Valid(t *testing.T) {
 	}
 
 	for _, uuidStr := range validUUIDs {
-		id, err := core.NewIdentifier(uuidStr)
+		id, err := model.NewIdentifier(uuidStr)
 		if err != nil {
 			t.Errorf("Valid UUID should not return error: %s, got error: %v", uuidStr, err)
 		}
@@ -36,7 +36,7 @@ func TestNewIdentifier_Invalid(t *testing.T) {
 	}
 
 	for _, uuidStr := range invalidUUIDs {
-		id, err := core.NewIdentifier(uuidStr)
+		id, err := model.NewIdentifier(uuidStr)
 		if err == nil {
 			t.Errorf("Invalid UUID should return error: %s", uuidStr)
 		}
@@ -51,7 +51,7 @@ func TestNewIdentifier_Invalid(t *testing.T) {
 
 func TestIdentifier_String(t *testing.T) {
 	uuidStr := "550e8400-e29b-41d4-a716-446655440000"
-	id, _ := core.NewIdentifier(uuidStr)
+	id, _ := model.NewIdentifier(uuidStr)
 
 	if diff := cmp.Diff(uuidStr, id.String()); diff != "" {
 		t.Errorf("Identifier.String() mismatch (-want +got):\n%s", diff)

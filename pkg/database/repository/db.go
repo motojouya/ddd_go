@@ -5,14 +5,14 @@ import (
 	"sync"
 
 	"github.com/go-gorp/gorp/v3"
-	company "github.com/motojouya/ddd_go/pkg/company/core"
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	company "github.com/motojouya/ddd_go/pkg/company/model"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
-	queue "github.com/motojouya/ddd_go/pkg/queue/core"
+	queue "github.com/motojouya/ddd_go/pkg/queue/model"
 )
 
 type DatabaseGetter interface {
-	GetDatabase() (core.ORPer, error)
+	GetDatabase() (model.ORPer, error)
 }
 
 type DatabaseGet struct{}
@@ -21,13 +21,13 @@ func NewDatabaseGet() *DatabaseGet {
 	return &DatabaseGet{}
 }
 
-var orp core.ORPer
+var orp model.ORPer
 var once sync.Once
 
-func (getter DatabaseGet) GetDatabase() (core.ORPer, error) {
+func (getter DatabaseGet) GetDatabase() (model.ORPer, error) {
 	var err error
 	once.Do(func() {
-		dbAccess, err := localRepository.GetEnv[core.DBAccess]()
+		dbAccess, err := localRepository.GetEnv[model.DBAccess]()
 		if err != nil {
 			return
 		}
@@ -37,7 +37,7 @@ func (getter DatabaseGet) GetDatabase() (core.ORPer, error) {
 			return
 		}
 
-		orp = core.CreateDatabase(connection, RegisterTable)
+		orp = model.CreateDatabase(connection, RegisterTable)
 		if err != nil {
 			return
 		}

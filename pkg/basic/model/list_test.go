@@ -1,4 +1,4 @@
-package core_test
+package model_test
 
 // FIXME `stretchr/testify/assert` から脱却
 import (
@@ -6,7 +6,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/motojouya/ddd_go/pkg/basic/core"
+	"github.com/motojouya/ddd_go/pkg/basic/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +20,7 @@ func TestFilter(t *testing.T) {
 		return false
 	}
 
-	var tList = core.Filter(list, predicate)
+	var tList = model.Filter(list, predicate)
 
 	assert.Equal(t, 2, len(tList))
 	assert.Equal(t, "this", tList[0])
@@ -35,7 +35,7 @@ func TestMap(t *testing.T) {
 		return item + "_mapped"
 	}
 
-	var tList = core.Map(list, mapper)
+	var tList = model.Map(list, mapper)
 
 	assert.Equal(t, 3, len(tList))
 	assert.Equal(t, "this_mapped", tList[0])
@@ -51,7 +51,7 @@ func TestFold(t *testing.T) {
 		return accumulator + "_" + item, nil
 	}
 
-	var result, err = core.Fold(list, "first", folder)
+	var result, err = model.Fold(list, "first", folder)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -67,7 +67,7 @@ func TestFoldError(t *testing.T) {
 		return "", errors.New("test error")
 	}
 
-	var _, err = core.Fold(list, "first", folder)
+	var _, err = model.Fold(list, "first", folder)
 	if err == nil {
 		t.Fatal("expected error, but got nil")
 	}
@@ -79,7 +79,7 @@ func TestReduce(t *testing.T) {
 		return accumulator + item
 	}
 
-	var result = core.Reduce(list, reducer)
+	var result = model.Reduce(list, reducer)
 
 	assert.Equal(t, 6, result)
 
@@ -93,8 +93,8 @@ func TestSome(t *testing.T) {
 		return item == "test"
 	}
 
-	var contains1 = core.Some(list1, predicate)
-	var contains2 = core.Some(list2, predicate)
+	var contains1 = model.Some(list1, predicate)
+	var contains2 = model.Some(list2, predicate)
 
 	assert.True(t, contains1)
 	assert.False(t, contains2)
@@ -108,8 +108,8 @@ func TestEvery(t *testing.T) {
 		return chars[0] == 't'
 	}
 
-	var unMatched = core.Every(list1, predicate)
-	var allMatched = core.Every(list2, predicate)
+	var unMatched = model.Every(list1, predicate)
+	var allMatched = model.Every(list2, predicate)
 
 	assert.False(t, unMatched)
 	assert.True(t, allMatched)
@@ -122,7 +122,7 @@ func TestFind(t *testing.T) {
 		return chars[0] == 't'
 	}
 
-	var foundItem, exists = core.Find(list, predicate)
+	var foundItem, exists = model.Find(list, predicate)
 
 	assert.Equal(t, "this", foundItem)
 	assert.True(t, exists)
@@ -137,7 +137,7 @@ func TestFindLast(t *testing.T) {
 		return chars[0] == 't'
 	}
 
-	var foundItem, exists = core.FindLast(list, predicate)
+	var foundItem, exists = model.FindLast(list, predicate)
 
 	assert.Equal(t, "test", foundItem)
 	assert.True(t, exists)
@@ -152,7 +152,7 @@ func TestKeys(t *testing.T) {
 		"item": 3,
 	}
 
-	var keys = core.Keys(m)
+	var keys = model.Keys(m)
 	sort.Strings(keys)
 
 	assert.Equal(t, 3, len(keys))
@@ -170,7 +170,7 @@ func TestValues(t *testing.T) {
 		"item": 1,
 	}
 
-	var values = core.Values(m)
+	var values = model.Values(m)
 	sort.Ints(values)
 
 	assert.Equal(t, 3, len(values))
@@ -188,7 +188,7 @@ func TestEntries(t *testing.T) {
 		"item": 3,
 	}
 
-	var entries = core.Entries(m)
+	var entries = model.Entries(m)
 	sort.Slice(entries, func(i, j int) bool {
 		return entries[i].Key < entries[j].Key
 	})
@@ -211,7 +211,7 @@ func TestToMap(t *testing.T) {
 		return string(chars[:2])
 	}
 
-	var result = core.ToMap(list, getKey)
+	var result = model.ToMap(list, getKey)
 
 	assert.Equal(t, 3, len(result))
 	assert.Equal(t, result["th"], "this")
@@ -227,7 +227,7 @@ func TestFlatten(t *testing.T) {
 		{"item", "example"},
 	}
 
-	var flattened = core.Flatten(nestedList)
+	var flattened = model.Flatten(nestedList)
 
 	assert.Equal(t, 4, len(flattened))
 	assert.Equal(t, flattened[0], "this")
@@ -275,7 +275,7 @@ func TestRelated(t *testing.T) {
 		}
 	}
 
-	var related = core.Relate(orderList, itemList, relate)
+	var related = model.Relate(orderList, itemList, relate)
 
 	assert.Equal(t, 2, len(related))
 	assert.Equal(t, related[0].Customer, "Alice")
@@ -304,7 +304,7 @@ func TestIntersect(t *testing.T) {
 		return itemRequest.ID == item.ID
 	}
 
-	var verticalMatched, horizontalMatched, verticalUnMatched, horizontalUnMatched = core.Intersect(verticalList, horizontalList, predicate)
+	var verticalMatched, horizontalMatched, verticalUnMatched, horizontalUnMatched = model.Intersect(verticalList, horizontalList, predicate)
 
 	assert.Equal(t, 2, len(horizontalMatched))
 	assert.Equal(t, "Apple", horizontalMatched[0].Name)
@@ -334,7 +334,7 @@ func TestGroup(t *testing.T) {
 		return item1.Quantity == item2.Quantity
 	}
 
-	var grouped = core.Group(list, grouper)
+	var grouped = model.Group(list, grouper)
 
 	assert.Equal(t, 2, len(grouped))
 	assert.Equal(t, 2, len(grouped[0]))
@@ -352,7 +352,7 @@ func TestDuplicates(t *testing.T) {
 		return item1 == item2
 	}
 
-	var duplicates = core.Duplicate(list, predicate)
+	var duplicates = model.Duplicate(list, predicate)
 
 	assert.Equal(t, 4, len(duplicates))
 	assert.Equal(t, duplicates[0], "this")

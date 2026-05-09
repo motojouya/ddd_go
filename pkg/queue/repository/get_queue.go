@@ -1,17 +1,17 @@
 package repository
 
 import (
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	database "github.com/motojouya/ddd_go/pkg/database/core"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
+	database "github.com/motojouya/ddd_go/pkg/database/model"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 )
 
-func GetQueue(db database.Executor, name string, forUpdate bool) (*queueCore.Queue, error) {
+func GetQueue(db database.Executor, name string, forUpdate bool) (*queueModel.Queue, error) {
 	conditions := map[string][]interface{}{
 		"name": {name},
 	}
 
-	var result []queueCore.Queue
+	var result []queueModel.Queue
 	_, err := db.GetIn(&result, conditions, forUpdate)
 	if err != nil {
 		return nil, err
@@ -24,12 +24,12 @@ func GetQueue(db database.Executor, name string, forUpdate bool) (*queueCore.Que
 	return &result[0], nil
 }
 
-func GetWorker(db database.Executor, name string, forUpdate bool) (*queueCore.Worker, error) {
+func GetWorker(db database.Executor, name string, forUpdate bool) (*queueModel.Worker, error) {
 	conditions := map[string][]interface{}{
 		"name": {name},
 	}
 
-	var result []queueCore.Worker
+	var result []queueModel.Worker
 	_, err := db.GetIn(&result, conditions, forUpdate)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func GetWorker(db database.Executor, name string, forUpdate bool) (*queueCore.Wo
 	return &result[0], nil
 }
 
-func GetQueueByWorker(db database.Executor, workerName string, forUpdate bool) ([]queueCore.Queue, error) {
+func GetQueueByWorker(db database.Executor, workerName string, forUpdate bool) ([]queueModel.Queue, error) {
 	conditions := map[string]interface{}{
 		"worker_name": workerName,
 	}
@@ -53,7 +53,7 @@ func GetQueueByWorker(db database.Executor, workerName string, forUpdate bool) (
 
 	pager := basic.Pager{Cursor: 1, Limit: 1000}
 
-	var result []queueCore.Queue
+	var result []queueModel.Queue
 	_, err := db.GetPaging(&result, conditions, orders, pager)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func GetQueueByWorker(db database.Executor, workerName string, forUpdate bool) (
 	return result, nil
 }
 
-func GetJobByQueue(db database.Executor, queueName string, limit int, forUpdate bool) ([]queueCore.Job, error) {
+func GetJobByQueue(db database.Executor, queueName string, limit int, forUpdate bool) ([]queueModel.Job, error) {
 	conditions := map[string]interface{}{
 		"queue":      queueName,
 		"start_date": nil,
@@ -74,7 +74,7 @@ func GetJobByQueue(db database.Executor, queueName string, limit int, forUpdate 
 
 	pager := basic.Pager{Cursor: 1, Limit: uint(limit)}
 
-	var result []queueCore.Job
+	var result []queueModel.Job
 	_, err := db.GetPaging(&result, conditions, orders, pager)
 	if err != nil {
 		return nil, err

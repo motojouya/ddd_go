@@ -4,11 +4,11 @@ import (
 	"errors"
 
 	"github.com/go-gorp/gorp/v3"
-	"github.com/motojouya/ddd_go/pkg/database/core"
+	"github.com/motojouya/ddd_go/pkg/database/model"
 	local "github.com/motojouya/ddd_go/pkg/local/repository"
 )
 
-func CreateWithId[Agr any, Dpd any, Nd core.Keyed, In core.TransferableWithId[Agr, Dpd, Nd]](
+func CreateWithId[Agr any, Dpd any, Nd model.Keyed, In model.TransferableWithId[Agr, Dpd, Nd]](
 	db gorp.SqlExecutor,
 	lcl local.Localer,
 	aggregate Agr,

@@ -4,38 +4,38 @@ import (
 	"encoding/json"
 	"errors"
 
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 	local "github.com/motojouya/ddd_go/pkg/local/repository"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 	queueStore "github.com/motojouya/ddd_go/pkg/queue/store"
 )
 
-type UpdateCallback = func(queueCore.Job) queueCore.Job
+type UpdateCallback = func(queueModel.Job) queueModel.Job
 
 func UpdateJob(
 	localer local.Localer,
 	store queueStore.QueueStore,
 	jobId basic.Identifier,
 	update UpdateCallback,
-) (queueCore.Job, error) {
+) (queueModel.Job, error) {
 	err := store.Begin()
 	if err != nil {
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 
 	conditions := map[string][]interface{}{
 		"id": {jobId},
 	}
 
-	var jobs []queueCore.Job
+	var jobs []queueModel.Job
 	_, err = store.GetIn(&jobs, conditions, true)
 	if err != nil {
 		store.Rollback()
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 
 	if len(jobs) == 0 {
-		return queueCore.Job{}, errors.New("Job Is Gone.")
+		return queueModel.Job{}, errors.New("Job Is Gone.")
 	}
 
 	job := update(jobs[0])
@@ -43,12 +43,12 @@ func UpdateJob(
 	_, err = store.Update(&job)
 	if err != nil {
 		store.Rollback()
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 
 	err = store.Commit()
 	if err != nil {
-		return queueCore.Job{}, err
+		return queueModel.Job{}, err
 	}
 
 	return job, nil
@@ -57,34 +57,34 @@ func UpdateJob(
 func FinishJob(
 	localer local.Localer,
 	store queueStore.QueueStore,
-	job queueCore.Job,
+	job queueModel.Job,
 	result string,
 	errCause error,
-) (queueCore.Job, error) {
+) (queueModel.Job, error) {
 
 	errSerial := ""
 	status := true
 	if errCause != nil {
-		errJson := queueCore.ErrorJson{Err: errCause.Error()}
+		errJson := queueModel.ErrorJson{Err: errCause.Error()}
 		serial, err := json.Marshal(errJson)
 		if err != nil {
-			return queueCore.Job{}, err
+			return queueModel.Job{}, err
 		}
 		errSerial = string(serial)
 		status = false
 	}
 
-	return UpdateJob(localer, store, job.Id, func(job queueCore.Job) queueCore.Job {
-		return queueCore.FinishJob(job, result, errSerial, localer.GetNow(), status)
+	return UpdateJob(localer, store, job.Id, func(job queueModel.Job) queueModel.Job {
+		return queueModel.FinishJob(job, result, errSerial, localer.GetNow(), status)
 	})
 }
 
 func StartJob(
 	localer local.Localer,
 	store queueStore.QueueStore,
-	job queueCore.Job,
-) (queueCore.Job, error) {
-	return UpdateJob(localer, store, job.Id, func(job queueCore.Job) queueCore.Job {
-		return queueCore.StartJob(job, localer.GetNow())
+	job queueModel.Job,
+) (queueModel.Job, error) {
+	return UpdateJob(localer, store, job.Id, func(job queueModel.Job) queueModel.Job {
+		return queueModel.StartJob(job, localer.GetNow())
 	})
 }

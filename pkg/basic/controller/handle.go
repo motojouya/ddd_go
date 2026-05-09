@@ -5,13 +5,13 @@ import (
 	"github.com/motojouya/geezer_auth/pkg/shelter/jwt"
 	"github.com/motojouya/geezer_auth/pkg/shelter/user"
 	localRepository "github.com/motojouya/ddd_go/pkg/local/repository"
-	userEntry "github.com/motojouya/ddd_go/pkg/user/entry"
+	userInput "github.com/motojouya/ddd_go/pkg/user/input"
 )
 
 func Hand[C any, I any, O any](createControl func() (C, error), handleControl func(C, I, *user.Authentic) (O, error)) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		header := userEntry.RequestHeader{}
+		header := userInput.RequestHeader{}
 		if err := (&echo.DefaultBinder{}).BindHeaders(c, &header); err != nil {
 			return err
 		}
@@ -40,7 +40,7 @@ func Hand[C any, I any, O any](createControl func() (C, error), handleControl fu
 	}
 }
 
-func getAuthentic(header userEntry.RequestHeader) (*user.Authentic, error) {
+func getAuthentic(header userInput.RequestHeader) (*user.Authentic, error) {
 	var jwtParse, err = localRepository.GetEnv[jwt.JwtParse]() // FIXME use cache!
 	if err != nil {
 		return nil, err

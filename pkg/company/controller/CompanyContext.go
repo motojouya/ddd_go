@@ -2,15 +2,15 @@ package controller
 
 import (
 	"github.com/motojouya/geezer_auth/pkg/shelter/user"
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
 	"github.com/motojouya/ddd_go/pkg/company/repository"
-	"github.com/motojouya/ddd_go/pkg/company/core"
+	"github.com/motojouya/ddd_go/pkg/company/model"
 )
 
-func CompanyContext[C repository.Company, E core.CompanyCodeGetter, R any](callback func(C, E, *user.Authentic, core.Company) (R, error)) func(C, E, *user.Authentic) (R, error) {
-	return func(control C, entry E, authentic *user.Authentic) (R, error) {
+func CompanyContext[C repository.Company, E model.CompanyCodeGetter, R any](callback func(C, E, *user.Authentic, model.Company) (R, error)) func(C, E, *user.Authentic) (R, error) {
+	return func(control C, input E, authentic *user.Authentic) (R, error) {
 
-		companies, err := control.GetCompanyByCode(entry)
+		companies, err := control.GetCompanyByCode(input)
 		if err != nil {
 			var zero R
 			return zero, err
@@ -23,6 +23,6 @@ func CompanyContext[C repository.Company, E core.CompanyCodeGetter, R any](callb
 
 		// FIXME ここで認可制御を入れる。
 
-		return callback(control, entry, authentic, companies[0])
+		return callback(control, input, authentic, companies[0])
 	}
 }

@@ -8,7 +8,7 @@ import (
 	databaseRepository "github.com/motojouya/ddd_go/pkg/database/repository"
 )
 
-func HandleCmd[C any, I any, O any](createControl func() (C, error), handleControl func(C, I, *geezerUser.Authentic) (O, error), entry I) (O, error) {
+func HandleCmd[C any, I any, O any](createControl func() (C, error), handleControl func(C, I, *geezerUser.Authentic) (O, error), input I) (O, error) {
 	var zeroResult O
 
 	user, err := user.Current()
@@ -30,5 +30,5 @@ func HandleCmd[C any, I any, O any](createControl func() (C, error), handleContr
 		return zeroResult, err
 	}
 
-	return handleControl(control, entry, nil)
+	return handleControl(control, input, nil)
 }

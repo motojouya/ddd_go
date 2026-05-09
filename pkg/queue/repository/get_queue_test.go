@@ -4,19 +4,19 @@ import (
 	"errors"
 	"testing"
 
-	basic "github.com/motojouya/ddd_go/pkg/basic/core"
-	databaseCore "github.com/motojouya/ddd_go/pkg/database/core"
+	basic "github.com/motojouya/ddd_go/pkg/basic/model"
+	databaseModel "github.com/motojouya/ddd_go/pkg/database/model"
 	databaseMock "github.com/motojouya/ddd_go/pkg/database/mock"
 	repository "github.com/motojouya/ddd_go/pkg/queue/repository"
-	queueCore "github.com/motojouya/ddd_go/pkg/queue/core"
+	queueModel "github.com/motojouya/ddd_go/pkg/queue/model"
 )
 
 func TestGetQueue(t *testing.T) {
-	queue1 := queueCore.Queue{
+	queue1 := queueModel.Queue{
 		Name:       "queue-1",
 		WorkerName: "worker-1",
 	}
-	queue2 := queueCore.Queue{
+	queue2 := queueModel.Queue{
 		Name:       "queue-2",
 		WorkerName: "worker-1",
 	}
@@ -24,8 +24,8 @@ func TestGetQueue(t *testing.T) {
 	t.Run("正常系: Queueを取得できる", func(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Queue); ok {
-					*v = []queueCore.Queue{queue1, queue2}
+				if v, ok := records.(*[]queueModel.Queue); ok {
+					*v = []queueModel.Queue{queue1, queue2}
 				}
 				return nil, nil
 			},
@@ -78,15 +78,15 @@ func TestGetQueue(t *testing.T) {
 }
 
 func TestGetWorker(t *testing.T) {
-	worker1 := queueCore.Worker{
+	worker1 := queueModel.Worker{
 		Name: "worker-1",
 	}
 
 	t.Run("正常系: Workerを取得できる", func(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{
 			FakeGetIn: func(records interface{}, conditions map[string][]interface{}, forLock bool) ([]interface{}, error) {
-				if v, ok := records.(*[]queueCore.Worker); ok {
-					*v = []queueCore.Worker{worker1}
+				if v, ok := records.(*[]queueModel.Worker); ok {
+					*v = []queueModel.Worker{worker1}
 				}
 				return nil, nil
 			},
@@ -140,12 +140,12 @@ func TestGetWorker(t *testing.T) {
 
 func TestGetQueueByWorker(t *testing.T) {
 	workerName := "worker-1"
-	queue1 := queueCore.Queue{
+	queue1 := queueModel.Queue{
 		Name:         "queue-1",
 		WorkerName:   workerName,
 		ProcessOrder: 1,
 	}
-	queue2 := queueCore.Queue{
+	queue2 := queueModel.Queue{
 		Name:         "queue-2",
 		WorkerName:   workerName,
 		ProcessOrder: 2,
@@ -153,16 +153,16 @@ func TestGetQueueByWorker(t *testing.T) {
 
 	t.Run("正常系: 正しい条件・順序・ページャでGetPagingが呼ばれる", func(t *testing.T) {
 		var capturedConditions map[string]interface{}
-		var capturedOrders []databaseCore.Order
+		var capturedOrders []databaseModel.Order
 		var capturedPager basic.Pager
 
 		sqlMock := databaseMock.SqlExecutorMock{
-			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseCore.Order, pager basic.Pager) ([]interface{}, error) {
+			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseModel.Order, pager basic.Pager) ([]interface{}, error) {
 				capturedConditions = conditions
 				capturedOrders = orders
 				capturedPager = pager
-				if v, ok := records.(*[]queueCore.Queue); ok {
-					*v = []queueCore.Queue{queue1, queue2}
+				if v, ok := records.(*[]queueModel.Queue); ok {
+					*v = []queueModel.Queue{queue1, queue2}
 				}
 				return nil, nil
 			},
@@ -211,7 +211,7 @@ func TestGetQueueByWorker(t *testing.T) {
 
 	t.Run("正常系: 存在しない場合は空スライスを返す", func(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{
-			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseCore.Order, pager basic.Pager) ([]interface{}, error) {
+			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseModel.Order, pager basic.Pager) ([]interface{}, error) {
 				return nil, nil
 			},
 		}
@@ -229,7 +229,7 @@ func TestGetQueueByWorker(t *testing.T) {
 	t.Run("異常系: GetPagingでエラー", func(t *testing.T) {
 		expectedErr := errors.New("store error")
 		sqlMock := databaseMock.SqlExecutorMock{
-			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseCore.Order, pager basic.Pager) ([]interface{}, error) {
+			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseModel.Order, pager basic.Pager) ([]interface{}, error) {
 				return nil, expectedErr
 			},
 		}
@@ -244,32 +244,32 @@ func TestGetQueueByWorker(t *testing.T) {
 
 func TestGetJobByQueue(t *testing.T) {
 	queueName := "queue-1"
-	job1 := queueCore.Job{
+	job1 := queueModel.Job{
 		Id:        basic.Identifier("job-1"),
 		Queue:     queueName,
 		Source:    "source-1",
-		Procedure: string(queueCore.ProcedureAllocate),
+		Procedure: string(queueModel.ProcedureAllocate),
 	}
-	job2 := queueCore.Job{
+	job2 := queueModel.Job{
 		Id:        basic.Identifier("job-2"),
 		Queue:     queueName,
 		Source:    "source-2",
-		Procedure: string(queueCore.ProcedureAllocate),
+		Procedure: string(queueModel.ProcedureAllocate),
 	}
 
 	t.Run("正常系: 正しい条件・順序・ページャでGetPagingが呼ばれる", func(t *testing.T) {
 		limit := 5
 		var capturedConditions map[string]interface{}
-		var capturedOrders []databaseCore.Order
+		var capturedOrders []databaseModel.Order
 		var capturedPager basic.Pager
 
 		sqlMock := databaseMock.SqlExecutorMock{
-			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseCore.Order, pager basic.Pager) ([]interface{}, error) {
+			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseModel.Order, pager basic.Pager) ([]interface{}, error) {
 				capturedConditions = conditions
 				capturedOrders = orders
 				capturedPager = pager
-				if v, ok := records.(*[]queueCore.Job); ok {
-					*v = []queueCore.Job{job1, job2}
+				if v, ok := records.(*[]queueModel.Job); ok {
+					*v = []queueModel.Job{job1, job2}
 				}
 				return nil, nil
 			},
@@ -321,7 +321,7 @@ func TestGetJobByQueue(t *testing.T) {
 
 	t.Run("正常系: 存在しない場合は空スライスを返す", func(t *testing.T) {
 		sqlMock := databaseMock.SqlExecutorMock{
-			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseCore.Order, pager basic.Pager) ([]interface{}, error) {
+			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseModel.Order, pager basic.Pager) ([]interface{}, error) {
 				return nil, nil
 			},
 		}
@@ -339,7 +339,7 @@ func TestGetJobByQueue(t *testing.T) {
 	t.Run("異常系: GetPagingでエラー", func(t *testing.T) {
 		expectedErr := errors.New("store error")
 		sqlMock := databaseMock.SqlExecutorMock{
-			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseCore.Order, pager basic.Pager) ([]interface{}, error) {
+			FakeGetPaging: func(records interface{}, conditions map[string]interface{}, orders []databaseModel.Order, pager basic.Pager) ([]interface{}, error) {
 				return nil, expectedErr
 			},
 		}
