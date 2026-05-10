@@ -57,3 +57,7 @@ func NewIdList(ids []Identifier) IdList {
 func EqId(left Identifier, right Identifier) bool {
 	return left == right
 }
+
+func ToIdList[T any](sourceList []T, mapper func (T) Identifier) IdList {
+	return NewIdList(Map(sourceList, mapper))
+}

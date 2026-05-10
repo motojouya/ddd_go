@@ -15,3 +15,7 @@ func (obj *NumberList) GetNumber() ([]uint, error) {
 func NewNumberList(numberList []uint) NumberList {
 	return NumberList{NumList: numberList}
 }
+
+func ToNumberList[T any](sourceList []T, mapper func (T) uint) NumberList {
+	return NewNumberList(Map(sourceList, mapper))
+}
